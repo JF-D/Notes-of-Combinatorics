@@ -1,10 +1,9 @@
 # 组合数学 1.1 (2017.9.5)
 
-BY：王华强 段江飞
 
-## 1.加法原理
-## 2.乘法原理
-## 3.排列与组合
+## 加法原理
+## 乘法原理
+## 排列与组合
 
 
 @定义 一些符号  
@@ -62,9 +61,9 @@ $$\sum_{i\ge0}{n\choose3i}=\frac{(1+\omega)^n+(1+\omega^2)^n+(1+1)^n}{3}$$
 
 >练习: 化简上式
 
-## 4.Vandermonde恒等式
+## Vandermonde恒等式
 
-### 1. 求和 $\sum_{i\ge0}^{}i{n \choose i}={n \choose 1}+2{n \choose 2} +\cdots+n{n \choose n}= ?$
+### 求和 $\sum_{i\ge0}^{}i{n \choose i}={n \choose 1}+2{n \choose 2} +\cdots+n{n \choose n}= ?$
 对$(1+x)^{n}=\sum_{i\ge0}{n \choose i}x^{i}$求导得到
 
 $$n(1+x)^{n-1}=\sum_{i\ge0}^{}i{n \choose i}x^{i-1}={n \choose 1}+2{n \choose 2}x+\cdots+n{n \choose n}x^{n-1}$$  
@@ -72,25 +71,20 @@ $$n(1+x)^{n-1}=\sum_{i\ge0}^{}i{n \choose i}x^{i-1}={n \choose 1}+2{n \choose 2}
 
 $$\sum_{i\ge0}^{}i{n \choose i}={n \choose 1}+2{n \choose 2}+\cdots+n{n \choose n}=n\cdot2^{n-1}$$  
 
-### 2.  $(1+x)^{n}(1+x)^{m}=(1+x)^{m+n}$
+### $(1+x)^{n}(1+x)^{m}=(1+x)^{m+n}$
 $(\sum_{i\ge0}^{}{n \choose i}x^{i})(\sum_{j\ge0}^{}{m \choose j}x^{j})=(\sum_{k\ge0}^{}{n+m \choose k}x^{k})$ 
 $\underbrace{\Rightarrow\sum_{i=0}^{k}{n \choose i}{m \choose k-i}={n+m \choose k}}_{Vandermonde \quad formula}$  
 令$m=n=k$可得
 
 $${n \choose 0}^{2}+{n \choose 1}^{2}+\cdots+{n \choose n}^{2}={2n \choose n}^{2}=2^{2n}-2\sum_{i=0}^{n-1}{2n \choose i}$$
 
-***
 
-在杨辉三角中，有以下关系
-
-![Pascaltri](inkedyhsj.gif) 
-<!-- img not modifyed -->
 
 写成公式形式：
 
 $${k\choose k}+{k+1 \choose k}+{k+2\choose k}+...+{n\choose k}={n+1\choose k+1}$$
 
-## 5.组合数的多项式性质
+## 组合数的多项式性质
 
 考察
 
@@ -117,4 +111,4 @@ $${x\choose n},...,{x\choose 1}$$(4)
 
 是一组线性无关的基.
 
->思考：见作业1
+思考：见作业1

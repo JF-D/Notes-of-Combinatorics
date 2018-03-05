@@ -1,0 +1,248 @@
+\documentclass[11pt]{article}
+
+\usepackage[a4paper]{geometry}
+\geometry{left=2.0cm,right=2.0cm,top=2.5cm,bottom=2.5cm}
+
+\usepackage{ctex}
+\usepackage{amsmath,amsfonts,graphicx,amssymb,bm,amsthm}
+\usepackage{algorithm,algorithmicx}
+\usepackage[noend]{algpseudocode}
+\usepackage{fancyhdr}
+\usepackage[OT2,OT1]{fontenc}
+
+\newcounter{counter_exm}\setcounter{counter_exm}{1}
+%\newcounter{counter_thm}\setcounter{counter_thm}{1}
+%\newcounter{counter_lma}\setcounter{counter_lma}{1}
+%\newcounter{counter_dft}\setcounter{counter_dft}{1}
+%\newcounter{counter_clm}\setcounter{counter_clm}{1}
+%\newcounter{counter_cly}\setcounter{counter_cly}{1}
+
+\newtheorem{theorem}{{\hskip 1.7em \bf 定理}}
+\newtheorem{lemma}[theorem]{\hskip 1.7em 引理}
+\newtheorem{proposition}[theorem]{Proposition}
+\newtheorem{claim}[theorem]{\hskip 1.7em 命题}
+\newtheorem{corollary}[theorem]{\hskip 1.7em 推论}
+\newtheorem{definition}[theorem]{\hskip 1.7em 定义}
+
+\renewcommand{\emph}[1]{\begin{kaishu}#1\end{kaishu}}
+
+\newenvironment{solution}{{\noindent\hskip 2em \bf 解 \quad}}
+
+
+\renewenvironment{proof}{{\noindent\hskip 2em \bf 证明 \quad}}{\hfill$\qed$\par}
+\newenvironment{example}{{\vskip1em\noindent\hskip 2em \bf 例 \arabic{counter_exm}\quad}}{\addtocounter{counter_exm}{1}\vskip1em\par}
+
+\newenvironment{concept}[1]{{\bf #1\quad} \begin{kaishu}} {\end{kaishu}\par}
+
+\newcommand{\NP}{\mathcal{NP}}
+\newcommand\E{\textrm{E}}
+\newcommand\True{\textrm{True}}
+\newcommand\False{\textrm{False}}
+
+\begin{document}
+
+    \pagestyle{fancy}
+    \lhead{\kaishu 中国科学院大学}
+    \chead{}
+    \rhead{\kaishu 2017年秋季学期组合数学}
+
+    \begin{center}
+        {\LARGE \bf 组合数学第九讲}\\
+    \end{center}
+        \begin{kaishu}
+            授课时间: 2017年11月14日\quad
+            授课教师: 孙晓明
+            \hfill 记录人: 秦宏
+        \end{kaishu}
+
+    \section{上半学期所学知识的几个应用}
+    在之前的课程中，我们介绍了递推关系的求解。本节我们将以可满足问题、独立集问题的枚举求解算法和快速排序算法为例，介绍其在递归算法时间复杂度分析及优化中应用。
+
+    \subsection{算法时间复杂度与渐进记号}
+    在评价一个算法的好坏时，我们常用时间复杂度描述其运行的时间开销。算法复杂度$T(n)$是以输入规模$n$为自变量，以算法运行时间为因变量的函数，在算法分析中，我们往往只关心这个函数在最坏的输入下（即确定的规模下令算法运行时间最长的输入）的增长趋势，常以函数的渐进上界表示。渐进上界具体定义如下：
+    \begin{definition}
+        给定正值函数$f,g:\mathbb{R}\to\mathbb{R}$，当存在正实系数$c$和某个实数$N$，使得
+        \[
+            \forall n\geq N: f(n)\leq c\cdot g(n)
+        \]
+        时，称$g$是$f$的渐进上界，记为$f(n)=O(g(n))$。
+    \end{definition}
+    对于多项式函数，显然其最高次项就是它的一个渐进上界，例如：
+
+    \begin{example}
+        \emph{若表示一个算法运行时间的多项式为$n^2+n+1$，则该算法的时间复杂度为$O(n^2)$。}
+    \end{example}
+
+    \subsection{布尔可满足问题}
+    $\NP$完全问题是$\NP$问题类中“最难”的一类问题，即如果问题A是$\NP$完全问题，那么$\NP$类内的任何问题都可以在多项式时间内规约到问题A。其中布尔可满足问题（Boolean satisfiability problem，SAT）在1971年被计算机科学家史蒂芬·库克证明的是$\NP$完全的，SAT问题也是第一个被证明的$\NP$完全问题。
+
+    \begin{example}
+        \textbf{布尔可满足问题：}\emph{给定任意$n$变量$m$子句的合取范式$\phi$，是否存在一组变量赋值使$\phi$为真？}
+    \end{example}
+    其中合取范式（形如$\phi=(x_1\vee \overline{x_2}\vee \overline{x_3})\wedge(\overline{x_2}\vee x_3\vee \overline{x_4})\cdots$）是子句的合取形式，即先将若干变量或变量的非作析取运算得到子句，再将这些子句作合取运算得到合取范式。实际上如果我们限制$\phi$中的每个子句的长度不超过3（即3-SAT问题），该问题依然是$\NP$完全的，且原问题可以在多项式时间规约新问题，因此，这里我们考虑3-SAT问题的求解算法。
+
+    \begin{solution}
+        最平凡的算法是枚举所有可能的变量赋值，带入$\phi$中检查是否满足，易知这种算法的时间复杂度为$\tilde O(2^n)$
+        \footnote{$\tilde O(\cdot)$表示省略掉低阶乘项的渐进上界。}
+        。设算法解决$n$变量SAT问题的时间复杂度为$T(n)$，考虑$x_1$有两种可能取值的情况，显然有$\phi=\phi_{x_1=\True}\lor\phi_{x_1=\False}$，如果我们把每个SAT问题拆成两个规模更小的子问题，算法的时间复杂度为：
+        \[
+            T(n) = 2T(n-1) + O(m)
+        \]
+        易解得$T(n)=\tilde O(2^n)$，相较于最平凡的算法并无提升。考虑到3SAT问题的性质，我们枚举某个子句包含的3个变量的取值时，必然存在一种取值会令子句为假，也就是说我们只需要枚举7中取值情况。不妨假设$\phi$的第一个子句为$x_1\lor x_2 \lor x_3$，那么有：
+        \begin{align*}
+            \phi=&\phi_{x_1=\True,x_2=\True,x_3=\True}\lor
+                 \phi_{x_1=\True,x_2=\True,x_3=\False}\lor\\
+                 &\phi_{x_1=\True,x_2=\False,x_3=\True}\lor
+                 \phi_{x_1=\True,x_2=\False,x_3=\False}\lor\\
+                 &\phi_{x_1=\False,x_2=\True,x_3=\True}\lor
+                 \phi_{x_1=\False,x_2=\True,x_3=\False}\lor\\
+                 &\phi_{x_1=\False,x_2=\False,x_3=\True}
+        \end{align*}
+        该算法的时间复杂度为：
+        \[
+            T(n) = 7T(n-3) + O(m)
+        \]
+        解得$T(n)=\tilde O(7^{n/3})\approx\tilde O(1.91^n)$，是平凡算法的有效改进。
+
+        如今，SAT问题求解已经发展为计算机科学的重要研究领域，衍生出许多SAT问题的高效求解算法，欢迎同学们课下对这个专题做进一步地了解。
+    \end{solution}
+
+    \subsection{最大独立集问题}
+    最大独立集问题（Maximal independent set problem）是经典的$\NP$完全问题——$k$大独立集存在性问题的最优化版本，定义如下：
+    \begin{example}
+        \textbf{最大独立集问题：}\emph{给定一个图$G=(V,E)$，$G$上的独立集$S\subseteq V$，满足$S$中的任两个顶点之间无连边，问$G$中最大的独立集元素个数是多少？}
+    \end{example}
+
+    \begin{solution}
+        设顶点个数$n=|V|$，与SAT类似，最大独立集问题也可通过枚举所有可能的点子集$S\subseteq V$求解，复杂度为$\tilde O(2^n)$。同样地，我们也可以利用图的性质对该问题进行优化。考虑图中的最大点度$d=\max\{\deg(v)\mid v\in V\}$，当$d\leq 2$时，图可以被分割成若干不联通的环和路径，显然可以在$O(n)$的时间复杂度内求解出原问题。当$d>2$时，我们考虑度最大的点$v^*$满足$\deg(v^*)=d\geq 3$，如最大独立集包含$v^*$，那么我们将$v^*$与其$d$个邻点从点集中删去，求得新点集导出子图的最大独立集，再将其并上$\{v^*\}$即为原图的最大独立集；如$v^*$不在其中，那么我们将$v^*$从点集中删去，新点集导出子图的最大独立集就是原图的独立集，即：
+        \[
+            \textrm{Max-IS}(G)=\max\{\textrm{Max-IS}(G[V(G)\backslash(\{v^*\}\cup N_G(v^*))])+1,\textrm{Max-IS}(G[V(G)\backslash\{v^*\}]\}
+        \]
+        其中$\textrm{Max-IS}(G)$表示图$G$的最大独立集、$G[S]$表示点集$S$在$G$上的点导出子图、$N_G(v^*)$表示$v^*$在$G$上的邻居点集、$V(G)$表示图$G$的点集。
+
+        设算法运行在$n$点图上的时间复杂度为$T(n)$，有：
+        \[
+            T(n)\leq \left\{\begin{array}{cl}
+                O(n) &\max\{\deg(v)\mid v\in V(G)\}\leq 2\\
+                T(n-4) + T(n-1) + O(n^2) &\textrm{otherwise}
+            \end{array}\right.
+        \]
+        易解得$T(n)\approx\tilde O(1.38^n)$，较之平凡算法改进明显。
+    \end{solution}
+
+    \subsection{快速排序}
+    \begin{example}
+        \textbf{排序问题：}\emph{给定一列整数，输出该数列的非降排列。}
+    \end{example}
+
+    快速排序算法（Quicksort algorithm）是解决排序问题有效的算法。快速排序的步骤可以简要概括为：
+    \begin{itemize}
+        \item[1)] 从数列中挑出一个元素，称为“基准”；
+        \item[2)] 重新排序数列，所有比基准值小的元素摆放在基准前面，所有比基准值大的元素摆在基准后面。在这个分区结束之后，该基准处于数列的中间位置。这一步称为分区操作；
+        \item[3)] 递归地把小于基准值元素的子数列和大于基准值元素的子数列排序。
+    \end{itemize}
+    其中基准的选择关系到算法的执行效率，容易证明，对于任意固定的“基准”选择，均存在长为$n$的数列令算法在这组输入下的时间复杂度为$\Omega(n^2)$。如果我们随机的选取基准，算法的期望时间复杂度会是多少呢？
+
+    \begin{solution}
+        给定一段序列$a_1,a_2,\cdots,a_n$，设选取第$m$个元素作为基准的快速排序算法的期望时间复杂度为$T(n,m)$，根据上述快速算法描述可知，其期望时间复杂度为：
+        \[
+            \E_m[T(n,m)]=\E_m[O(n)+\E_{m_1}[T(m-1,m_1)]+\E_{m_2}[T(n-m-1,m_2)]]
+        \]
+        记$T(n):=\E_m[T(n,m)]$，有如下递推关系：
+        \begin{align*}
+            T(n)&=\frac{1}{n}\sum_{m=1}^n(T(m-1)+T(n-m))+O(n)\\
+                &=\frac{2}{n}\sum_{m=0}^{n-1} T(m)+O(n)
+        \end{align*}
+        易解得$T(n)= O(n\log n)$。
+    \end{solution}
+
+    \section{专题一：数论}
+    本节将主要讨论素数的分布。众所周知，孪生素数猜想描述了素数分布非常稠密的区域有无限多处这一分布性质，本节我们关心素数分布的另一个性质：不严格的说，就是在任意充分大的区间内素数分布不会太稀疏，或者说我们希望区间区间$(n,f(n)]$之间必存在素数，问$f(n)$可以取到多小？
+
+    \subsection{欧几里得素数无穷证明}
+    古希腊数学家欧几里得证明了素数有无穷多个，证明如下。
+
+    \begin{proof}
+        反证假设只存在有限$n$个素数$p_1,p_2,\cdots,p_n$，令$N=\prod_{i=1}^n p_i + 1$。因为$N>1$必存在一个素因子，然而显然对于任意的$i\in [n]$，都有$p_i\nmid N$即这样的素因子不存在，矛盾，原命题得证。
+    \end{proof}
+
+    如上证明过程说明：对于任意大于$2$的正整数，区间$(n,n!+1]$内必存在一个素数。
+
+    \subsection{梅森素数}
+    对于素数$p$，如果$2^p-1$也是素数，我们称$2^p-1$为梅森素数，由此引出素数无穷的第二个证明。
+
+    \begin{proof}
+        反证假设一：只存在有限个素数，其中$p$是最大的素数，令$N=2^p - 1$。因为$N>1$必存在一个素因子，然而根据费马小定理有$2^p \equiv 2\pmod p$，即$(2^p-1)\bmod p=1$，可推知$p\nmid (2^p-1)$。又有下证对于任何素数$q<p$，$q\nmid 2^p-1$成立。
+
+        反证假设二：存在$q<p$满足$q\mid 2^p-1$，显然$q\not=1$，根据费马小定理有$q\mid 2^{q-1}-1$，推知：
+        \begin{gather*}
+            q\mid \gcd(2^p-1,2^{q-1}-1)\Rightarrow q\mid 2^{\gcd(p,q-1)}-1 \tag{1}
+        \end{gather*}
+        因为$p$是素数，$q<p$且$q\not=2$，推知$\gcd(p,q-1)<q-1$，根据费马小定理，(1)式不成立，矛盾，即反证假设二不成立。因而$N$不存在任何小于等于$p$的素因子，矛盾，反证假设一不成立。
+    \end{proof}
+
+    如上证明过程说明：对于任意大于$2$的正整数，区间$(n,2^n-1]$内必存在一个素数。
+
+    \subsection{费马数}
+    对于自然数$n$，我们称$2^{2^n}+1$为费马数。数学家皮埃尔·德·费马（Pierre de Fermat）在1640年猜想所有费马数都是素数，并验证了前5个费马数的素性，而数学家莱昂哈德·欧拉（Leonhard Euler）在1732年发现第6个费马数$F_5=2^{32}+1$可以被641整除，证明如下。
+
+    \begin{proof}
+        641可以被分解为$641=5^4+2^4=5\cdot 2^7+1$，于是有$5\cdot 2^7\equiv -1\pmod{641}$，进而有$5^4\cdot 2^{28}\equiv 1\pmod{641}$，将带入$5^4\equiv-2^4\pmod{641}$得到$-2^{32}\equiv 1\pmod {641}$，原命题得证。
+    \end{proof}
+    \vskip1em
+    实际上，通过费马数我们还可以得到素数无穷的另一个证明。
+
+    \begin{proof}
+        易知，素数无穷的充分必要条件是存在无穷个数两两互素。下面我们将证明，任意两个不同的费马数$2^{2^n}+1$与$2^{2^m}+1$互素。不妨设$m>n$，显然$2^{2^n}+1\mid 2^{(2^n)\cdot{2^1}}-1$成立，归纳假设$2^{2^n}+1\mid 2^{(2^n)\cdot{2^t}}-1$成立，那么由：
+        \[
+            2^{(2^n)\cdot{2^{t+1}}}-1=(2^{(2^n)\cdot{2^t}}+1)(2^{(2^n)\cdot{2^t}}-1)
+        \]
+        推知$2^{2^n}+1\mid 2^{(2^n)\cdot{2^{t+1}}}-1$成立，归纳假设成立，则如下整除关系成立：
+        \[
+            2^{2^n}+1\mid 2^{(2^n)\cdot{2^{m-n}}}-1=2^{2^m}-1
+        \]
+        考虑到费马数均为奇数，可进一步得到$\gcd(2^{2^n}+1,2^{2^m}+1)=\gcd(2^{2^n}+1,(2^{2^m}+1)\bmod (2^{2^n}+1))=\gcd(2^{2^n}+1,2)=1$，原命题得证。
+    \end{proof}
+
+    \subsection{伯特兰-契比雪夫定理}
+    \begin{theorem}
+        对于任何大于$3$的整数$n$，总存在一个素数$p$满足：
+        \[
+            n<p<2n-2
+        \]
+    \end{theorem}
+    数学家约瑟·伯特兰（Joseph Bertrand）于1845年提出这个猜想，最早由巴夫尼提·契比雪夫（Pafnuty Chebyshev）在1850年证明。简便起见，我们仅给出$(n,2n]$区间内存在素数的证明。
+
+    \begin{proof}
+        反正假设对于某个充分大的正整数$n$，在$(n,2n]$内不存在素数，依据这一假设，我们将给出$\binom{2n}{n}$的一个上界，并说明当$n$充分大的时候这个上界要小于其实际的下界从而引出矛盾。
+
+        首先定义$h_p(n)$为$n!$的素因子分解中$p$出现的次数，显然有$h_p(n)=\sum_{k\geq 1}\lfloor\frac{n}{p^k}\rfloor$，据此们给出$\binom{2n}{n}$的素因子分解
+        \[
+            \binom{2n}{n}=\prod_{p\in P(2,n)}p^{h_p(2n)-2h_p(n)}
+        \]
+        其中$P(n,m)$被定义为$[n,m]$区间内的素数集合。考虑到当$p>\frac{2n}{3}$，则$h_p(2n)=2$且$h_p(n)=1$，故在这个区间内的素数不出现在$\binom{2n}{n}$的素因子分解中；
+        当$\sqrt{2n}< p\leq \frac{2n}{3}$时，由$\lfloor\frac{2n}{p^2}\rfloor=0$推知$h_p(2n)-2h_p(2n)=\lfloor\frac{2n}{p}\rfloor-2\lfloor\frac{n}{p}\rfloor\leq 1$；令$t$为满足$p^t\leq 2n$的最大整数，那么$h_p(2n)-2h_p(n)=\sum_{k=1}^t(\lfloor\frac{2n}{p^k}\rfloor-2\lfloor\frac{n}{p^k}\rfloor)\leq t$，推知$p^{h_p(2n)-2h_p(n)}\leq p^t\leq 2n$。 由此给出$\binom{2n}{n}$的上界：
+        \begin{align*}
+            \binom{2n}{n}&=\prod_{p\in P(2,\sqrt{2n}-1)}p^{h_p(2n)-2h_p(n)}\cdot \prod_{p\in P(\sqrt{2n},\frac{2n}{3})}p^{h_p(2n)-2h_p(n)}\cdot
+            \prod_{p\in P(\frac{2n}{3}+1,n)}p^{h_p(2n)-2h_p(n)}\\
+            &\leq (2n)^{|P(2,\sqrt{2n}-1)|}\cdot \prod_{p\in P(\sqrt{2n},\frac{2n}{3})}p
+        \end{align*}
+        因为可以证明：
+        \[
+            \prod_{p\in P(\sqrt{2n},\frac{2n}{3})}p < \prod_{p\in P(0,\frac{2n}{3})}p<4^{\frac{2n}{3}} \tag{2}
+        \]
+        继而推知：
+        \begin{align*}
+            \frac{4^n}{2n}\leq \binom{2n}{n}&< (2n)^{\frac{\sqrt{2n}}{2}}\cdot 4^{2n/3}\\
+            4^{n/3}&<(2n)^{\frac{\sqrt{2n}+2}{2}}\\
+            \frac{n}{3}\ln(4)&<\left(\frac{\sqrt{2n}+2}{2}\right)\ln(2n)
+        \end{align*}
+        注意到$n^k$的增长速度要快于$\ln(n)$，故当$n$充分大时（即当$n$大于等于某个可求得的常数$n_0$时），引发矛盾。此外，当$1\leq n<n_0$时，经验证可在对应区间内找到素数，原定理得证。
+    \end{proof}
+    式(2)的证明细节将在下节课中给出。
+\end{document}
+
+
+
+
+

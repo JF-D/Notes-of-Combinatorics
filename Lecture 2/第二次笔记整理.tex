@@ -1,0 +1,204 @@
+﻿%!TEX program = xelatex
+\documentclass[11pt]{article}%文档类型
+
+\usepackage[a4paper]{geometry}
+\geometry{left=2.0cm,right=2.0cm,top=2.5cm,bottom=2.5cm}
+
+\usepackage{ctex}
+\usepackage{amsmath,amsfonts,graphicx,amssymb,bm,amsthm}
+\usepackage{algorithm,algorithmicx}
+\usepackage[noend]{algpseudocode}
+\usepackage{fancyhdr}
+\usepackage{hyperref}
+
+\newcounter{counter_exm}\setcounter{counter_exm}{1}
+%\newcounter{counter_thm}\setcounter{counter_thm}{1}
+%\newcounter{counter_lma}\setcounter{counter_lma}{1}
+%\newcounter{counter_dft}\setcounter{counter_dft}{1}
+%\newcounter{counter_clm}\setcounter{counter_clm}{1}
+%\newcounter{counter_cly}\setcounter{counter_cly}{1}
+
+\newtheorem{theorem}{{\hskip 1.7em \bf 定理}}
+\newtheorem{lemma}[theorem]{\hskip 1.7em 引理}
+\newtheorem{proposition}[theorem]{Proposition}
+\newtheorem{claim}[theorem]{\hskip 1.7em 命题}
+\newtheorem{corollary}[theorem]{\hskip 1.7em 推论}
+\newtheorem{definition}[theorem]{\hskip 1.7em 定义}
+%定义可能需要的定理环境
+\renewcommand{\emph}[1]{\begin{kaishu} #1 \end{kaishu}}
+%对原有的命令进行重新定义
+\newenvironment{solution}{{\noindent\hskip 2em \bf 解 \quad}}{\vspace{1em}}
+
+
+\renewenvironment{proof}{{\noindent\hskip 2em \bf 证明 \quad}}{\hfill$\qed$\par\vspace{1em}}
+\newenvironment{example}{{\noindent\hskip 2em \bf 例 \arabic{counter_exm}\quad}}{\addtocounter{counter_exm}{1}\par}
+
+\newenvironment{concept}[1]{{\bf #1\quad} \begin{kaishu}} {\end{kaishu}\par\vspace{1em}}
+
+\newcommand\E{\mathbb{E}}
+%替换与定义新的环境
+%导言区，定义不同环境的可选项
+\begin{document}
+
+    \pagestyle{fancy}
+    \lhead{\kaishu 中国科学院大学}
+    \chead{}
+    \rhead{\kaishu 2017年秋季学期组合数学}
+%页眉页脚，楷书字体
+    \begin{center}
+        {\LARGE \bf 组合数学第二讲}\\
+    \end{center}
+        \begin{kaishu}
+            授课时间: 2017年9月12日\quad
+            授课教师: 孙晓明
+            \hfill 记录人: 王新鹏
+        \end{kaishu}
+
+    \section{思考题: 财产分配}
+    一个富翁有两个儿子，富翁希望能公平的将其所有资产分给两个儿子，问存不存在一种分配使得其所有亲戚认为分配是公平的？若存在, 请给出。
+
+    问题的数学描述等价为, 已知$f_1$,$f_2$,\dots,$f_n$为$n$个概率密度函数, 即对于所有的$1\le i\le n$满足
+    \[
+        \int_0^1 f_i(x) {\rm d}x=1
+    \]
+    且
+    \[
+        \forall x\in [0,1]: f_i(x) \ge 0.
+    \]
+    当$n = 2$时,是否存在一个对$[0, 1]$区间的划分$(A, B)$,使得$A\bigcup B= [0, 1]$, $A\bigcap B =\emptyset$
+
+    对$\forall 1\le i\le n$满足
+    \[
+        \int_A f_i(x) {\rm d}x=\frac{1}{2}
+    \]
+
+    $\textbf{解法一}$
+        \quad 对于$n=2$的情况, 我们可以采用构造法解决. \footnote{本解法来自吴昊同学}\\
+        记$F(x)=\int_0^x f_1(t) {\rm d}t, G(x)=\int_0^x f_2(t) {\rm d}t$, 则$F,G$连续, 且$F(0)=G(0)=0,F(1)=G(1)=1$. 问题变为, 找一个区划$[a,b]$, 使
+        \[
+            F(b)-F(a)=G(b)-G(a)=\frac{1}{2}
+        \]
+        为此, 我们定义两个连续函数
+        \[
+            m(x)=F^{-1}(F(x)+\frac{1}{2})\quad
+            n(x)=G^{-1}(G(x)+\frac{1}{2})
+        \]
+
+        记$F(p)=G(q)=\frac{1}{2}$, 则函数$m(x)$过$(0,p),(p,1)$两点, 函数$n(x)$过$(0,q),(q,1)$两点, 无论$p,q$大小如何, 两函数图像必然有一个交点$(c,d)$. 则$m(c)=n(c)=d$, 因此$F(d)-F(c)=G(d)-G(c)=\frac{1}{2}$. 于是区间$[c,d]$满足题意. \hfill$\qed$
+    \vspace{1em}
+
+    $\textbf{解法二}$
+        \quad 首先取区间$[0,a]$, 使$\int_0^a f(x) {\rm d}x=\frac{1}{2}$, 那么$\int_a^1 f(x) {\rm d}x=1 - \frac{1}{2} = \frac{1}{2}$. 不妨假定$\int_0^a g(x) {\rm d}x <\frac{1}{2}$, 那么$\int_a^1 g(x) {\rm d}x >\frac{1}{2}$. 现在将积分的区间向右移动. 在从$[0,a]$到$[a,1]$的过程中, 保持$\int_p^q f(x) {\rm d}x = \frac{1}{2}$, 而$\int_p^q g(x) {\rm d}x$的值将连续变化, 从小于$\frac{1}{2}$增加到大于$\frac{1}{2}$, 由介值定理可知其中一定存在满足$\int_p^q g(x) {\rm d}x =\frac{1}{2}$的区间.
+
+        对$\int_0^a g(x) {\rm d}x >\frac{1}{2}$的情况, 证明类似. \hfill$\qed$
+
+
+    \section{组合数与整值多项式}
+    从上节课的内容我们知道$x,x^2, \dots, x^n$可以分解成若干个组合数的和, 事实上, $\{ x^k\}$$\{ \binom{x}{k}\}$是整数环上的多项式向量空间的两组基. 实际上, 我们可以方便地计算出每一项展开的系数
+
+    % \subsection{$1^k+2^k+\cdots+n^k$}
+    \subsection{$k$次幂求和}
+    我们已经知道
+    \begin{gather*}
+       x=\binom{x}{1}\\
+       x^2=2\cdot\binom{x}{2}+\binom{x}{1}
+    \end{gather*}
+    我们有$x^k$的一个一般表示形式
+    \[
+        x^k=c_{k,k}\binom{x}{k}+\dots+c_{k,1}\binom{x}{1}+c_0
+    \]
+    很容易看出, $x^k$项只在$\binom{x}{k}$中有, 因此$c_k=k!$. 然后, $x^{k-1}$项只在$\binom{x}{k}$和$\binom{x}{k-1}$中有, 因此我们又可以得到, 依次递归下去, 我们就可以得到展开式的全部系数了.
+    再利用朱世杰恒等式
+    \footnote{朱世杰恒等式：
+        $\binom{k}{k}+\binom{k+1}{k}+\dots+\binom{n}{k}=\binom{n+1}{k+1}$
+    }
+    每一项的展开式求和, 就可以得到$\sum_{i=1}^n i^k$了.
+
+    其中, 系数的变型$\frac{c_{k,j}}{j!}$称为\emph{第二类斯特林数}({\it Stirling numbers of the second kind}), 在之后的课程中会专门介绍.
+
+    \subsection{整值多项式}
+    虽然我们知道是整系数幂多项式和组合数多项式可以转换的, 但是如果已知其中之一是整系数的, 那么另一个的系数是否是整数呢.
+
+    首先, 我们很容易发现整系数幂多项式转换成组合数形式一定是整系数的, 但反之不然。这是因为$x$的组合数函数形式中含有分式. 因此我们的问题就是, 如何判定一个多项式是整值多项式.
+
+    \begin{theorem}
+        对于$n$次多项式$P(x)$, $P(x)$是整值多项式当且仅当$P(x)$可以表示为如下形式:
+        \[
+            P(x)=c_n\binom{x}{n}+\ldots+c_1\binom{x}{1}+c_0,
+        \]
+        其中$c_n,\ldots,c_0$均为整数, 即$P(x)$可以表示为组合基$\left\{\binom{x}{n},\ldots,\binom{x}{0}\right\}$的整系数线性组合.
+    \end{theorem}
+    \begin{proof}
+        首先, 当$P(x)$可以表示为组合基的整系数线性组合时, 自变量若为整数, 式中每一项均为整数, 函数值必为整数, 即$P(x)$为整值多项式.
+
+        接下来需证明当$P(x)$为整值多项式时, $P(x)$一定可以表示为组合基的整系数线性组合, 即证明\[
+            P(x)=c_n\binom{x}{n}+\ldots+c_1\binom{x}{1}+c_0,
+        \]中的系数均为整数.
+
+        因为$P(x)$是整值的, 故$P(0)$为整数, 那么$c_0$为整数. 归纳假设$c_0,\ldots,c_{k-1}$均为整数, 令$x=k$, 显然$c_n\binom{x}{n}+c_{n-1}\binom{x}{n-1}+\ldots+c_{k+1}\binom{x}{k+1} = 0$, 即$c_k=P(k)-(c_{k-1}\binom{k}{k-1}+\ldots+c_1\binom{k}{1}+c_0)$, 又因为$P(k)$为整数, 可推知$c_k$为整数. 最后可归纳证出$P(x)$在组合基$\binom{x}{0},\ldots,\binom{x}{n}$下是整系数的, 进而证明$P(x)$是整值多项式.
+    \end{proof}
+
+    注意到在证明定理1的充分性时, 我们只用到了$P(0),\ldots,P(n)$为整数这一条件, 我们其重新表述为:
+    \begin{theorem}
+        对于$n$次多项式$P(x)$, 如果$P(0),\dots,P(n)$均为整数, 那么$P(x)$可以表示为组合基的整系数线性组合.
+    \end{theorem}
+
+    定理2的证明与定理1中的充分性证明相同. 而实际上, 定理2可以进一步加强为如下版本.
+    \begin{theorem}
+        对于$n$次多项式$P(x)$, 如果存在整数$t$, 如果$P(t),P(t+1),\dots,P(t+n)$均为整数, 那么$P(x)$可以表示为组合基的整系数线性组合.
+    \end{theorem}
+
+    \begin{proof}
+        令 $Q(x)=P(x+t)$, 那么$Q(0),\ldots,Q(n)$均为整数, 由定理2得$Q(x)$是整值多项式的, 同时有 \[
+            Q(x)=c'_n\binom{x}{n}+\dots+c'_1\binom{x}{1}+c'_0,
+        \] 其中$c'_0,\ldots,c'_n$为整数. 又$P(x)=Q(x-t)$, 即
+        \[
+            P(x)=Q(x-t)=c'_n\binom{x-t}{n}+\dots+c'_1\binom{x-t}{1}+c'_0.
+        \]
+        根据范德蒙恒等式
+        \footnote{范德蒙恒等式：
+            $\binom{a+b}{k}=\sum_{i\geq 0}\binom{a}{i}\binom{b}{k-i}$
+        }, 上式可变换为
+        \begin{gather*}
+            P(x)=c'_n\left(\sum_{i=0}^n\binom{x}{i}\binom{-t}{n-i}\right)+\dots+c'_1\left(\sum_{i=0}^1\binom{x}{i}\binom{-t}{1-i}\right)+c'_0\\
+            P(x)=\sum_{k=0}^n\left(\sum_{i=k}^n\binom{-t}{i-k}c'_i\right)\binom{x}{k},
+        \end{gather*}
+        显然其系数部分是整的, 因此$P(x)$是整值多项式.
+    \end{proof}
+
+    进一步的推广是不可行的, 减少点的个数显然不能成立, 而如果不是连续的整点, 一个简单的反例是$y=\frac{x}{2}$, 它仅在$x$为偶数时取整数.
+
+    \section{概率, 组合数和Stirling公式}
+    掷硬币, 我们都不陌生, 一般认为正面和反面的概率都是$\frac{1}{2}$. 如果掷$n$次硬币中有$m$次为正面, 根据二项分布的知识, 我们知道$m=\lfloor\frac{n}{2}\rfloor$时概率最大. 当$n\rightarrow \infty$ 时, 这个概率的极限
+    \[
+        \lim_{n\rightarrow \infty}\frac{\binom{2n}{n}}{2^{2n}}\sim\frac{1}{\sqrt{n}}
+    \]
+
+
+    要得出这一结果, 我们只需应用斯特林公式, 下面给出公式以及不完全的证明.
+    \begin{theorem}[Stirling公式]
+        \[
+            n!\sim\sqrt{2\pi n}\;(\frac{n}{e})^n
+        \]
+    \end{theorem}
+    \begin{proof}
+        在组合数学中, 我们只关心所求的阶, 而不关心其系数, 两边取对数, 因此所证可以化为
+        \[
+            \ln{n!} = (n+\frac{1}{2})\ln n-n + O(1)
+        \]
+        我们已经知道
+        \begin{align*}
+            \int_1^n \ln x{\rm d}x<\ln{n!}&=\sum_{i=1}^n \ln i<\int_1^{n+1} \ln x{\rm d}x\\
+            n\ln n-n<\ln{n!}&< (n+1)\ln (n+1)-n
+        \end{align*}
+        接下来考虑在$[k, k+1],k\in{N}$内的的误差值$ P(k) = \int_k^{k+1} \ln x{\rm d}x - \ln k$, 因为$\ln x$的原函数为$x \ln x - x$,所以$P(k) = (k+1) \ln \frac{k+1}{k} - 1$, 对其泰勒展开, 则
+        \begin{gather*}
+            P(k) =(k+1)\left(\frac{1}{k}-\frac{1}{2k^2}+\dots\right) -1 \\
+            P(k) = \frac{1}{2k}+o\left(\frac{1}{k}\right)
+        \end{gather*}
+        由调和级数求和公式可得$\sum_{k=1}^n P(k) = \frac{1}{2} \ln n + O(1)$
+
+        综上, $\ln{n!} = (n+\frac{1}{2})\ln n-n + O(1)$.
+    \end{proof}
+
+\end{document}

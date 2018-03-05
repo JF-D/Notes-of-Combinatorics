@@ -1,0 +1,315 @@
+\documentclass[11pt]{article}
+
+\usepackage[a4paper]{geometry}
+\geometry{left=2.0cm,right=2.0cm,top=2.5cm,bottom=2.5cm}
+
+\usepackage{ctex}
+\usepackage{amsmath,amsfonts,graphicx,amssymb,bm,amsthm}
+\usepackage{algorithm,algorithmicx}
+\usepackage[noend]{algpseudocode}
+\usepackage{fancyhdr}
+
+
+\newcounter{counter_exm}\setcounter{counter_exm}{1}
+%\newcounter{counter_thm}\setcounter{counter_thm}{1}
+%\newcounter{counter_lma}\setcounter{counter_lma}{1}
+%\newcounter{counter_dft}\setcounter{counter_dft}{1}
+%\newcounter{counter_clm}\setcounter{counter_clm}{1}
+%\newcounter{counter_cly}\setcounter{counter_cly}{1}
+
+\newtheorem{theorem}{{\hskip 1.7em \bf 定理}}
+\newtheorem{lemma}[theorem]{\hskip 1.7em 引理}
+\newtheorem{proposition}[theorem]{Proposition}
+\newtheorem{claim}[theorem]{\hskip 1.7em 命题}
+\newtheorem{corollary}[theorem]{\hskip 1.7em 推论}
+\newtheorem{definition}[theorem]{\hskip 1.7em 定义}
+
+\renewcommand{\emph}[1]{\begin{kaishu}#1\end{kaishu}}
+
+\newenvironment{solution}{{\noindent\hskip 2em \bf 解 \quad}}
+
+
+\renewenvironment{proof}{{\noindent\hskip 2em \bf 证明 \quad}}{\hfill$\qed$\par}
+\newenvironment{example}{{\noindent\hskip 2em \bf 例 \arabic{counter_exm}\quad}}{\addtocounter{counter_exm}{1}\par}
+
+\newenvironment{concept}[1]{{\bf #1\quad} \begin{kaishu}} {\end{kaishu}\par}
+
+\newcommand\E{\mathbb{E}}
+\begin{document}
+
+    \pagestyle{fancy}
+    \lhead{\kaishu 中国科学院大学}
+    \chead{}
+    \rhead{\kaishu 2017年秋季学期组合数学}
+
+    \begin{center}
+        {\LARGE \bf 组合数学第1讲}\\
+    \end{center}
+        \begin{kaishu}
+            授课时间: 2017.9.5\quad
+            授课教师: 孙晓明
+            \hfill 记录人: 王华强\quad 段江飞\end{kaishu} \par
+
+\section{计数原理}
+
+
+
+    \begin{concept}{加法原理}
+        完成一件事可以有n类方法, 在第一类方法中有$m_{1}$种不同的方法, 在完成一件事可以有n类方法, 在第一类方法中有$m_{1}$ 种不同的方法, 在第二类办法中有$m_{2}$种不同的方法$\cdots$，在第$n$类办法中有$m_{n}$种不同的方法,那么完成这件事的不同方法数为$N=m_{1}+m_{2}+m_{3}+\cdots+m_{n}$
+    \end{concept}
+
+
+    \begin{concept}{乘法原理}
+        令$S$是对象的有序对$(a, b)$的集合, 其中第一个对象$a$来自大小为$p$的一个集合, 而对于对象$a$ 的每个选择, 对象$b$有$q$ 种选择. 于是, $S$ 的大小为$p\times q$:
+         \[
+            |S|=p\times q
+         \]
+    \end{concept}
+
+    乘法原理的第二种实用形式是: \emph{如果第一项任务有$p$个结果, 而不论第一项任务的结果如何, 第二项任务都有$q$个结果,那么, 这两项任务连续执行就有$p\times q$个结果.}
+
+
+    \begin{example}
+        一名学生要修两门课程. 第一门课可以安排在上午3个小时中的任一小时, 第二门课则可以安排在下午4 个小时的任一小时. 该学生可能的课程安排数量是$3\times4=12$.
+    \end{example}
+
+
+\section{排列与组合}
+    \begin{concept}{排列}
+        对$n$个不同的元素选出$m$个元素进行排列, 共有$n(n-1)\cdots(n-m+1)$种不同的排列方式. 记作：
+         \[
+            P_{n,m}=n(n-1)\cdots(n-m+1) =\frac{n!}{(n-m)!}=n^{\underline{m}}
+         \]
+    \end{concept}
+
+    \begin{concept}{组合}
+        从$n$个不同的元素中取出$m$个元素, 共有$n(n-1) \cdots (n-m+1)$种方法. 记作：
+        \[
+            {n \choose m}=n(n-1) \cdots (n-m+1)=\frac{n!}{m!(n-m)!}=\frac{n^{\underline{m}}}{m!}
+        \]
+    \end{concept}
+
+
+    \begin{concept}{推广}
+        $P_{n,m}, {n \choose m}$不只适用于$m,n$是整数, 且$m\leq n$的情况, 还适用于$n,m$是实数, $m \ge n$的情况. 当$m \ge n$时, 从$n$个元素中取出$m$个显然是不可能的, 即${n \choose m}=0$, 进行计算则是:
+        $${n \choose m}=n(n-1) \cdots(n-n)\cdots (n-m+1)=0 \quad(m>n)$$
+        
+        当$n=-1$时这样计算可以得到：
+        $${-1 \choose m}=\frac{(-1)(-2)\cdots(-m)}{m!}=(-1)^{m}$$
+        
+        当$n=\frac{1}{2}$时可以得到：
+        $${\frac{1}{2} \choose n}=\frac{\frac{1}{2} (\frac{1}{2}-1) \cdots (\frac{1}{2}-n+1)}{n!}=\frac{(-1)^{n-1} (2n-2)!} {2^{2n-1} n!(n-1)!}=\frac{(-1)^{n-1} {2n-1 \choose n-1}}{2^{2n-1} n}$$
+    \end{concept}
+
+
+    \begin{concept}{二项式定理}
+        二项式定理最早由牛顿提出, 又称牛顿二项式定理, 它描述了二项式的幂的代数展开. 根据该定理, 可以将两个数之和的整数次幂诸如$(x + y)^{n}$ 展开为类似 $ax^by^c$ 项之和的恒等式.二项式定理的形式可以用以下形式表示：
+        $$(x+y)^{n}=\sum_{i=0}^{n}{n \choose i}x^{n-i}y^{i}$$
+    \end{concept}
+
+    令$y=1$可以得到$(1+x)^n$的展开式, 这是一个十分常用的展开式：
+    $$(1+x)^{n}=\sum_{i=0}^{n}{n \choose i}x^{i}=\sum_{i\ge0}^{}{n \choose i}x^{i}$$
+    
+    当$n=-1$时, 利用泰勒展开式也可以将$(1+x)^{-1}$进行展开
+    $$(1+x)^{-1}=1-x+x^{2}-x^{3}+\cdots=\sum_{i\ge0}^{}(-1)^{i}x^{i}=\sum_{i\ge0}^{}{-1 \choose i}x^{i}$$
+    
+    前面我们提到${n \choose m}$中的$n,m$可以推广到任意实数, 二项式定理中的${n \choose i}$中的$n$也可以任取, 二项式定理同样可以推广到任意实数次幂, 即广义二项式定理$$(1+x)^a=\sum_{i\ge 0}{a\choose i}x^i\quad(|x|<1, a\in \mathbb{R})$$
+
+    \begin{example}
+        $${n\choose 0}+{n\choose 1}+...+{n\choose n}=(1+1)^n=2^{n}$$
+        
+        $${n\choose 0}-{n\choose 1}+...+{n\choose n}=(1-1)^n=0$$
+        
+        由此可以推出
+        $${n\choose 0}+{n\choose 2}+...+{n\choose 2*\lfloor n\rfloor}=2^{n-1}$$
+        
+        $${n\choose 1}+{n\choose 3}+...+{n\choose 2*\lfloor n\rfloor}=2^{n-1}$$
+    \end{example}
+
+    \begin{example}
+        求:
+        $$\sum_{i\ge 0}{n\choose 3i}$$
+
+    \end{example}
+
+    \begin{solution}
+        考虑1的三次单位根 1, $\omega$, $\omega_2$, 其中
+        $\omega=e^{ \frac{2\pi i}{3}}$, $\omega_2=e^{ \frac{4\pi i}{3}}$, $\omega^3=1$
+        于是可以展开$(1+\omega)^n,(1+\omega_2)^n,(1+1)^n$
+        \begin{equation}
+            (1+1)^n={n\choose 0} +{n\choose 1}+{n\choose 2}+{n\choose 3}+\cdots
+        \end{equation}
+
+        \begin{equation}
+            (1+\omega)^n={n\choose 0}1^n +{n\choose 1}\omega^1+{n\choose 2}\omega^2+{n\choose 3}1+\cdots
+        \end{equation}
+
+        \begin{equation}
+            (1+\omega_2)^n={n\choose 0}1^n +{n\choose 1}\omega_2^1+{n\choose 2}\omega_2^2+{n\choose 3}+\cdots \label{3}
+        \end{equation}
+
+        由$\omega^2=\omega_2$, $\omega=\omega_2^2$, (3)可化成:
+        \begin{equation}
+            (1+\omega_2)^n={n\choose 0}1^n +{n\choose 1}\omega^2+{n\choose 2}\omega^1+{n\choose 3}+\cdots
+        \end{equation}
+
+        由$1+\omega+\omega^2=0$, (1), (2), (4),得
+        $$\sum_{i\ge0}{n\choose 3i}=\frac{(1+\omega)^n+(1+\omega_2)^n+(1+1)^n}{3}$$
+    \end{solution}
+
+    \begin{example}
+        求和 $\sum_{i\ge0}^{}i{n \choose i}={n \choose 1}+2{n \choose 2} +\cdots+n{n \choose n}$
+    \end{example}
+
+    \begin{solution}
+        对$(1+x)^{n}=\sum_{i\ge0}{n \choose i}x^{i}$求导得到
+        $$n(1+x)^{n-1}=\sum_{i\ge0}^{}i{n \choose i}x^{i-1}={n \choose 1}+2{n \choose 2}x+\cdots+n{n \choose n}x^{n-1}$$
+        
+        令$x=1$得到
+        $$\sum_{i\ge0}^{}i{n \choose i}={n \choose 1}+2{n \choose 2}+\cdots+n{n \choose n}=n\cdot2^{n-1}$$
+    \end{solution}
+
+\section{Vandermonde Formula}
+
+    \begin{theorem}
+        $Vandermonde Formula$ 形式如下
+        $$\sum_{i=0}^{k}{n \choose i}{m \choose k-i}={n+m \choose k}$$
+    \end{theorem}
+
+    \begin{proof}
+        $$(1+x)^{n}(1+x)^{m}=(1+x)^{m+n}$$
+        
+        对$(1+x)^{n}$, $(1+x)^{m}$, $(1+x)^{m+n}$ 分别利用二项式定理得到
+        \[
+            \begin{aligned}
+            (1+x)^{n}(1+x)^{m}&=(\sum_{i\ge0}^{}{n \choose i}x^{i})(\sum_{j\ge0}^{}{m \choose j}x^{j})\\
+            (1+x)^{m+n}&=\sum_{k\ge0}^{}{n+m \choose k}x^{k}
+            \end{aligned}
+        \]
+        
+        考虑$x^k$的系数, 分别用两种方法求出
+        $$\sum_{i=0}^{k}{n \choose i}{m \choose k-i}={n+m \choose k}$$
+    \end{proof}
+
+    \begin{example}
+        令$m=n=k$可得
+        $${n \choose 0}^{2}+{n \choose 1}^{2}+\cdots+{n \choose n}^{2}={2n \choose n}^{2}=2^{2n}-2\sum_{i=0}^{n-1}{2n \choose i}$$
+    \end{example}
+
+\section{朱世杰恒等式}
+
+    \begin{theorem}
+    在杨辉三角中，各组合数有依据位置的关系
+    写成公式形式：
+    $${k\choose k}+{k+1 \choose k}+{k+2\choose k}+...+{n\choose k}={n+1\choose k+1}$$
+    即朱世杰恒等式
+    \end{theorem}
+
+
+\section{组合数的多项式性质}
+    考察
+    $$1^2+2^2+3^2+...+n^2=\frac{n(n+1)(2n+1)}{6}$$
+    
+    其可用组合数的性质证明如下：
+
+    \begin{proof}
+        ${k\choose 2}$可以写成二阶多项式,所以:
+        \begin{equation}
+            \sum{k\choose 2}=\sum\frac{k(k+1)}{2}=\sum(\frac{k^2}{2}-\frac{k}{2})
+        \end{equation}
+        \begin{equation}
+            k={k\choose 1}
+        \end{equation}
+        因而$k^2$可以写成${k\choose 2}$, ${k\choose 1}$的线性组合, 对于不同的k求和, 得到如下结果:
+        \begin{equation}
+            \sum_{k=1}^{n}k^2=2\sum_{k=1}^{n}{k\choose 2}+\sum_{k=1}^n {k\choose 1}
+        \end{equation}
+    \end{proof}
+
+
+    \begin{example}
+        求: $1^3+2^3+3^3+...+n^3$
+    \end{example}
+
+    \begin{solution}
+        与指数为2的情况相似, 发现$x^3$也可写成某些组合数的线性组合:
+        $$x^2=x(x-1)+x=2{x\choose 2}+{x\choose 1}$$
+        
+        $$x^3=6{x\choose 3}+6{x\choose 2}+{x\choose 1}$$
+        
+        对于不同的$x$, 对上式中的每一项分别求和, 由朱世杰恒等式, 可以在$i$固定时,求得$\sum{x\choose i}$的值.
+        \begin{equation}
+        \begin{aligned}
+            \sum_{k=1}^{n}k^3&=\sum_{k=1}^{n}(6{k\choose 3}+6{k\choose 2}+{k\choose 1})\\
+            &=6\sum_{k=1}^{n}{k \choose 3}+6\sum_{k=1}^{n}{k \choose 2}+\sum_{k=1}^{n}{k \choose 1}\\
+            &=6{n+1\choose 4}+6{n+1\choose 3}+{n+1\choose 2}
+        \end{aligned}
+        \end{equation}
+    \end{solution}
+
+    思考: 对于任意的k, $x^k$是否可以写成$x^k=?{x\choose k}+...+?{x\choose 1}$的形式?
+
+    \begin{theorem}
+        $$x^k=k!{x\choose k}+?{x\choose k-1}+...+?{x\choose 1}$$
+        
+        其中
+        $${x\choose k},{x\choose k-1},...,{x\choose 1}$$
+        
+        是一组线性无关的基.
+    \end{theorem}
+
+    \begin{proof}
+    首先证明${x\choose k},{x\choose k-1},...,{x\choose 1}$的线性无关性.  \newline
+    若${x\choose k},{x\choose k-1},...,{x\choose 1}$的线性相关, 则存在不全为零的$a_k, a_{k-1}, a_{k-2},..., a_1$使得
+    $$a_k{x\choose k}+a_{k-1}{x\choose k-1}+...+a_2{x\choose 2}+a_1{x\choose 1}=0$$
+    
+    令$x=1$, 得到
+    $$a_k{1\choose k}+a_{k-1}{1\choose k-1}+...+a_2{1\choose 2}+a_1{1\choose 1}=0$$
+    
+    由${1\choose k}, {1\choose k-1},...,{1\choose 2}$全部为$0$, ${1\choose 1}=1$, 得到
+    $$a_1=0$$
+    
+    令$x=2$, 得到
+    $$a_k{2\choose k}+a_{k-1}{2\choose k-1}+...+a_2{2\choose 2}+a_1{2\choose 1}=0$$
+    
+    由${2\choose k}, {2\choose k-1},...,{2\choose 3}$全部为$0$, ${2\choose 2}=1, {2\choose 1}=2$, 得到
+    $$a_2+2a_1=0$$
+    
+    由$a_1=0$的得到
+    $$a_2=0$$    
+    
+    依次令$x=3,4,\cdots,k$可以推出
+    $$a_1=a_2=\cdots=a_k=0$$
+    
+    即不存在一组不全为0的数使得
+    $$a_k{x\choose k}+a_{k-1}{x\choose k-1}+...+a_2{x\choose 2}+a_1{x\choose 1}=0$$
+    
+    与假设矛盾, 因此${x\choose k},{x\choose k-1},...,{x\choose 1}$线性无关得证.
+    接下来用数学归纳法证明$x^k$可以由${x\choose k},{x\choose k-1},...,{x\choose 1}$线性表出.
+    当$k=1$时
+    $$x={x\choose 1}$$
+    
+    假设$k=n-1$时$x^{n-1}$可以由${x\choose n-1},{x\choose n-2},...,{x\choose 1}$线性表出
+    $$x^{n-1}=c_{n-1}{x\choose n-1}+c_{n-2}{x\choose n-2}+\cdots+c_{1}{x\choose 1}$$
+    
+    当$k=n$时, 
+    $${x\choose n}=\frac{x(x-1)\cdots(x-n+1)}{n!}=\frac{x^n}{n!}+d_{n-1}x^{n-1}+d_{n-2}x^{n-2}+\cdots+d_{1}x$$
+    
+    所以, $x^n$可以表示为
+    $$x^n=n!{x\choose n}+n!d_{n-1}x^{n-1}+n!d_{n-2}x^{n-2}+\cdots+n!d_{1}x$$
+    
+    根据假设, $x^{n-1}, x^{n-2}, \cdots, x$都可以用${x\choose n-1},{x\choose n-2},...,{x\choose 1}$线性表出, 所以$x^n$可用${x\choose n},{x\choose n-1},...,{x\choose 1}$线性表出,且${x\choose n}$的线性系数为$n!$.
+    \end{proof}
+    
+    我们可以求出$x^k$写成$x^k=C_k{x\choose k}+...+C_1{x\choose 1}$的形式时的系数$C_k, C_{k-1}, \cdots, C_1$.在定理的证明过程中我们已经得到$C_k=k!$, 即
+    $$x^k=k!{x\choose k}+...+C_1{x\choose 1}$$
+    
+    由组合数
+    $${x\choose k}=\frac{x(x-1)\cdots(x-k+1)}{k!}$$
+    
+    在等号的右侧中多出来了$x^{k-1}, x^{k-2}, \cdots, x$ 项, 其中我们发现$x^{k-1}$项只存在${x\choose k-1}$的展开式中, 因此二者的系数之和应为$0$, 由此可以推出$C_{k-1}$的值.
+    
+    同理, 根据$x^i$项的系数和${x\choose i}$的展开式中$x^i$的关系可以得到$C_i$的值, 进而由此可以推出$C_k,C_{k-1}\cdots,C_1$的值.
+
+\end{document}
+

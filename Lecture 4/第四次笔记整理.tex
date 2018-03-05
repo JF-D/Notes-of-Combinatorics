@@ -1,0 +1,388 @@
+%!TEX program = xelatex
+\documentclass[11pt]{article}
+
+\usepackage[a4paper]{geometry}
+\geometry{left=2.0cm,right=2.0cm,top=2.5cm,bottom=2.5cm}
+
+\usepackage{ctex}
+\usepackage{amsmath,amsfonts,graphicx,amssymb,bm,amsthm,mathrsfs}
+\usepackage{algorithm,algorithmicx}
+\usepackage[noend]{algpseudocode}
+\usepackage{fancyhdr}
+
+\usepackage{multirow}
+\usepackage{caption}
+
+
+\newcounter{counter_exm}\setcounter{counter_exm}{1}
+%\newcounter{counter_thm}\setcounter{counter_thm}{1}
+%\newcounter{counter_lma}\setcounter{counter_lma}{1}
+%\newcounter{counter_dft}\setcounter{counter_dft}{1}
+%\newcounter{counter_clm}\setcounter{counter_clm}{1}
+%\newcounter{counter_cly}\setcounter{counter_cly}{1}
+
+\newtheorem{theorem}{{\hskip 1.7em \bf 定理}}
+\newtheorem{lemma}[theorem]{\hskip 1.7em 引理}
+\newtheorem{proposition}[theorem]{Proposition}
+\newtheorem{claim}[theorem]{\hskip 1.7em 命题}
+\newtheorem{corollary}[theorem]{\hskip 1.7em 推论}
+\newtheorem{definition}[theorem]{\hskip 1.7em 定义}
+
+\renewcommand{\figurename}{图}
+
+\renewcommand{\emph}[1]{\begin{kaishu}#1\end{kaishu}}
+\newenvironment{solution}{{\vskip1em\noindent\hskip 2em \bf 解 \quad}}
+
+\renewenvironment{proof}{{\noindent\hskip 2em \bf 证明 \quad}}{\hfill$\qed$\par}
+\newenvironment{example}{{\noindent\hskip 2em \bf 例 \arabic{counter_exm}\quad}}{\addtocounter{counter_exm}{1}\par}
+
+\newenvironment{concept}[1]{{\bf #1\quad} \begin{kaishu}} {\end{kaishu}\par}
+
+\newcommand\E{\mathbb{E}}
+
+\begin{document}
+
+    \pagestyle{fancy}
+    \lhead{\kaishu 中国科学院大学}
+    \chead{}
+    \rhead{\kaishu 2017年秋季学期组合数学}
+    
+    \begin{center}
+        {\LARGE \bf 组合数学第四讲}\\
+    \end{center}
+        \begin{kaishu}
+            授课时间: 2017年9月26日\quad
+            授课教师: 孙晓明
+            \hfill 记录人: 任瀚昇\quad 魏云松
+        \end{kaishu}
+
+
+    \section{递归关系}
+
+        \subsection{汉诺塔}
+        \emph{有三根相邻的柱子，标号为$A,B,C$。$A$柱子上从下到上按金字塔状叠放着$n$个不同大小的圆盘，要把所有盘子移动到柱子$B$上。要求每次只能将某根柱子最上方的盘子移动到另一根柱子最上方，并且保证每次移动后不会出现大盘子在小盘子上方的情况，请问最少需要多少次移动？}
+        
+        \begin{solution} 
+            设$n$个盘子的汉诺塔需要的最少移动次数为$H(n)$。首先我们肯定是把上面$n-1$个盘子移动到柱子$C$上，然后把最大的一块放在$B$上，最后把$C$上的所有盘子移动到$B$上。由此我们得出$H(n)$的递归关系：
+            \begin{align*}
+                &H(1)= 1;\\
+                &H(n) = 2H(n-1)+1, \qquad (n>1)
+            \end{align*}
+            稍加变形得：
+            \begin{align*}
+                &H(1)=1;\\
+                &H(n) + 1 = 2(H(n-1)+1), \qquad (n>1)
+            \end{align*}
+            令$G(n)=H(n)+1$得：
+            \begin{align*}
+                &G(1)= 2;\\
+                &G(n) = 2G(n-1), \qquad (n>1)
+            \end{align*}
+            解得$G(n)=2^n$，所以$H(n)=G(n)-1=2^n-1$，即最少需要$2^n-1$次。
+        \end{solution}
+
+        \subsection{区域划分最大数问题}
+        \emph{平面上的$n$条直线最多将平面分成多少块？}
+
+        \begin{solution} 
+            设最多划分成$F(n)$块。假设平面上已有$n-1$条直线，再添加一条直线，与已有的直线最多增加$n-1$个交点，新增的直线被割成$n$份，每份一一对应于一个新的区域，由此我们得出$F(n)$的递归关系：
+            \begin{align*}
+                &F(1) = 2;\\
+                &F(n) = F(n-1)+n, \qquad (n>1)
+            \end{align*}
+            对$F(n)$连续调用递归得：\[
+                F(n)=F(1) + \sum_{i=2}^n i=\frac{1}{2}(n^2 + n + 2)
+            \]
+            即最多可划分为$\frac{1}{2}(n^2 + n + 2)$个部分。
+        \end{solution}
+        
+        类似地，我们可以考虑平面中的圆划分的区域最大个数、空间中的直线或圆划分的区域的最大个数等问题，它们都可以由递归关系进行描述。
+
+    \newpage
+    \section{递归关系的有力解法——生成函数}
+        \subsection{多米诺骨牌}
+        \emph{用大小为$1\times2$的多米诺骨牌完全覆盖$2\times n$的矩形区域，一共有多少种不同的覆盖方法？}
+
+        \begin{solution}在$n=1$和$n=2$时，结果分别是$1$和$2$；当$n>2$时，有两种情形：
+        一种情况是矩形的最后一列被一个多米诺骨牌完全覆盖；另一种情况是最后一列被两个多米诺骨牌的一端覆盖。如图所示，双箭头符号表示多米诺骨牌朝向。\\
+
+           \begin{figure}[h]
+                \center
+                \begin{minipage}{0.45\textwidth}
+                    \center
+                    \begin{tabular}{|*{8}{p{0.8em}|}}
+                        \hline
+                         & &\multicolumn{4}{|c|}{\dots }& &\multirow{2}{*}{$\Updownarrow$} \\
+                        \cline{1-7}
+                         & &\multicolumn{4}{|c|}{\dots }& & \\
+                        \hline
+                    \end{tabular}
+                    \caption{情形一}
+                    \label{1}
+                \end{minipage}
+                \begin{minipage}{0.45\textwidth}
+                    \center
+                    \begin{tabular}{|*{8}{p{0.8em}|}}
+                        \hline
+                         & &\multicolumn{4}{|c|}{\dots }&\multicolumn{2}{|c|}{$\Longleftrightarrow$}\\
+                        \hline
+                         & &\multicolumn{4}{|c|}{\dots }&\multicolumn{2}{|c|}{$\Longleftrightarrow$}\\
+                        \hline
+                    \end{tabular}
+                    \caption{情形二}
+                \end{minipage}
+           \end{figure}
+            如果设长为$n$的矩形有$f(n)$种覆盖方法，容易看出，第一种情形对应有$f(n-1)$种覆盖方法，第二种情形对应有$f(n-2)$种覆盖方法，于是有：
+            \begin{align*}
+                &f(1) = 1;\\
+                &f(2) = 2;\\
+                &f(n) = f(n-1)+f(n-2), \qquad (n>2)
+            \end{align*}
+            得到了变了初值的斐波拉契数列，由于特征根法已为人熟知，下面我们尝试用生成函数的方法来求这个数列的通项公式。
+            定义生成函数为
+            \begin{align}
+                H(x)=\sum_{i=0}^{\infty}f(n)x^n \label{1}
+            \end{align}
+            乘$x$移项并改变求和指标
+            \begin{align}
+                xH(x)=\sum_{i=0}^{\infty}f(n)x^{n+1}=\sum_{i=1}^{\infty}f(n-1)x^{n}\label{2}\\
+                x^2H(x)=\sum_{i=0}^{\infty}f(n)x^{n+2}=\sum_{i=2}^{\infty}f(n-2)x^{n}\label{3}
+            \end{align}
+            $(1)-(2)-(3)$有
+            \begin{align*}
+                 H(x)&=f(0)+f(1)x+f(2)x^2+f(3)x^3+\dots\\
+                xH(x)&=   \qquad\quad\, f(0)x+f(1)x^2+f(2)x^3+\dots\\
+                x^2H(x)&=     \qquad\qquad\qquad\quad\!    f(0)x^2+f(1)x^3+\dots\\
+                \Longrightarrow(1-x-x^2)H(x)&=1\\
+                H(x)&=\frac{1}{1-x-x^2}
+            \end{align*}
+            将$\frac{1}{1-x-x^2}$化成最简分式的情形$\frac{A}{1-{\lambda_1}x}+\frac{B}{1-{\lambda_2}x}$，幂级数展开，得到
+            \[
+                H(x)=\sum_{i=0}^{\infty}(A{\lambda_1}^n+B{\lambda_2}^n)x^n
+            \]
+            比较对应项系数，即得
+            \[
+                f(n)=A{\lambda_1}^n+B{\lambda_2}^n
+            \]
+            解得:$\lambda_1 = \frac{1+\sqrt{5}}{2},\lambda_2 = \frac{1-\sqrt{5}}{2},A=\frac{5+\sqrt{5}}{10},B=\frac{5-\sqrt{5}}{10}$，即:
+            \[
+                f(n) = \frac{5+\sqrt{5}}{10}\left(\frac{1+\sqrt{5}}{2}\right)^n + \frac{5-\sqrt{5}}{10}\left(\frac{1-\sqrt{5}}{2}\right)^n
+            \]
+        \end{solution}
+
+        \subsection{略微加强版多米诺骨牌}
+            \emph{用大小为$1\times2$的多米诺骨牌完全覆盖$3\times n$的矩形区域，一共有多少种不同的覆盖方法？}
+ 
+            \begin{solution}
+                在$n=1$和$n=2$时，结果分别是$0$和$3$；当$n>2$时，有两种情形：情形一是矩形的最后一列被两个多米诺骨牌覆盖；情形二是最后一列被三个多米诺骨牌的一端覆盖。如图所示，双箭头符号表示多米诺骨牌朝向。
+                \begin{figure}[H]
+                    \center
+                    \begin{minipage}[b]{0.6\textwidth}
+                        \center
+                        \begin{tabular}{|*{8}{p{0.8em}|}}
+                            \hline
+                             & &\multicolumn{4}{|c|}{\dots }&\multicolumn{2}{|c|}{$\Longleftrightarrow$}\\
+                            \hline
+                             & &\multicolumn{4}{|c|}{\dots }& &\multirow{2}{*}{$\Updownarrow$} \\
+                            \cline{1-7}
+                             & &\multicolumn{4}{|c|}{\dots }& & \\
+                            \hline
+                        \end{tabular}
+                        \quad
+                        \nolinebreak
+                        \begin{tabular}{|*{8}{p{0.8em}|}}
+                            \hline
+                             & &\multicolumn{4}{|c|}{\dots }& &\multirow{2}{*}{$\Updownarrow$} \\
+                            \cline{1-7}
+                             & &\multicolumn{4}{|c|}{\dots }& & \\
+                            \hline
+                             & &\multicolumn{4}{|c|}{\dots }&\multicolumn{2}{|c|}{$\Longleftrightarrow$}\\
+                            \hline
+                        \end{tabular}
+                        \caption{情形一}
+                        \label{1}
+                    \end{minipage}
+                    \begin{minipage}[b]{0.3\textwidth}
+                        \center
+                        \begin{tabular}{|*{8}{p{0.8em}|}}
+                            \hline
+                             & &\multicolumn{4}{|c|}{\dots }&\multicolumn{2}{|c|}{$\Longleftrightarrow$}\\
+                            \hline
+                             & &\multicolumn{4}{|c|}{\dots }&\multicolumn{2}{|c|}{$\Longleftrightarrow$}\\
+                            \hline
+                             & &\multicolumn{4}{|c|}{\dots }&\multicolumn{2}{|c|}{$\Longleftrightarrow$}\\
+                            \hline
+                        \end{tabular}
+                        \caption{情形二}
+                    \end{minipage}
+                \end{figure}
+
+                由此可看出，如果知道了情形一中，去除那两个多米诺骨牌铺的区域后的剩下的平铺方案数，就可由递推关系求出总的方案数。于是我们设题目所求的方案数为$A(n)$，设对于$3\times n$的“缺一角”矩形，铺满方案数为$B(n)$。
+                \begin{figure}[h]
+                    \center
+                    \begin{tabular}{|*{8}{p{0.8em}|}}
+                        \cline{1-7}
+                         & &\multicolumn{4}{|c|}{\dots }& \\
+                        \hline
+                         & &\multicolumn{4}{|c|}{\dots }& & \\
+                        \hline
+                         & &\multicolumn{4}{|c|}{\dots }& & \\
+                        \hline
+                    \end{tabular}
+                    \caption{$3\times n$的“缺一角”矩形}
+                \end{figure}
+
+                在$n=1$和$n=2$时，$B(n)$分别是$1$和$0$；当$n>2$时，有两种情形：情形一是矩形的最后一列被一个多米诺骨牌覆盖；情形二是最后一列被两个多米诺骨牌的一端覆盖。如图所示，双箭头符号表示多米诺骨牌朝向。
+                
+                \begin{figure}[H]
+                    \center
+                    \begin{minipage}[b]{0.45\textwidth}
+                        \center
+                        \begin{tabular}{|*{8}{p{0.8em}|}}
+                            \cline{1-7}
+                             & &\multicolumn{4}{|c|}{\dots }& \\
+                            \hline
+                             & &\multicolumn{4}{|c|}{\dots }& &\multirow{2}{*}{$\Updownarrow$} \\
+                            \cline{1-7}
+                             & &\multicolumn{4}{|c|}{\dots }& & \\
+                            \hline
+                        \end{tabular}
+                        \caption{情形一}
+                    \end{minipage}
+                    \begin{minipage}[b]{0.45\textwidth}
+                        \center
+                        \begin{tabular}{|*{8}{p{0.8em}|}}
+                            \cline{1-7}
+                             & &\multicolumn{3}{|c|}{\dots }&\multicolumn{2}{|c|}{$\Longleftrightarrow$}\\
+                            \hline
+                             & &\multicolumn{3}{|c|}{\dots }& &\multicolumn{2}{|c|}{$\Longleftrightarrow$}\\
+                            \hline
+                             & &\multicolumn{3}{|c|}{\dots }& &\multicolumn{2}{|c|}{$\Longleftrightarrow$}\\
+                            \hline
+                        \end{tabular}
+                        \caption{情形二}
+                    \end{minipage}
+                \end{figure}
+
+                综上所述，对于$3\times n$的矩形，图3中的情形对应$2B(n-1)$种平铺方案，图4中的情形对应$A(n-2)$种平铺方案；而对于$3\times n$的“缺一角”矩形，图6中的情形对应$A(n-1)$种方案，图7中的情形对应$B(n-2)$种方案。
+
+                根据以上分析可建立二元递归方程组如下
+                \begin{align*}
+                    &A(0)=1,A(1)=0,A(2)=3;\\
+                    &B(0)=0,B(1)=1,B(2)=0;\\
+                    &A(n)=A(n-2)+2B(n-1), \qquad (n>2)\\
+                    &B(n)=A(n-1)+B(n-2), \qquad (n>2)
+                \end{align*}
+                为求解这个递归方程组，可以使用消元法转化为一元的形式，再利用之前的方法给出解答；但有时消元法无法凑效，比如每一个方程中都含有两个以上的$A(n)$和$B(n)$项。这里我们给出可求解一般的多元递推关系的方法。
+                
+                定义$A(n)$，$B(n)$的生成函数为
+                \[
+                    \large \mathcal{A}(x)=\sum_{i=0}^{\infty}A(n)x^n,
+                    \qquad
+                    \large \mathcal{B}(x)=\sum_{i=0}^{\infty}B(n)x^n
+                \]
+
+                通过乘上$x$的幂次变换系数的指标，使之恰好与递归方程对应而消去。这里直接给出通过递归方程组简化后的结果
+
+                \[
+                    \left\{
+                    \begin{array}{rcrl}
+                    (x^2-1)\mathcal{A}(x)&+&2x\mathcal{B}(x)&=-1\\
+                     x\mathcal{A}(x)&+&(x^2-1)\mathcal{B}(x)&=0
+                     \end{array}\right.
+                     \]
+                由克莱默法则求解并利用幂级数展开得
+               \begin{align*}
+                \mathcal{A}(x)&=\frac{1-x^2}{x^4-4x^2+1}\\
+                              &=(1-x^2)\left(\frac{\frac{1}{2}+\frac{\sqrt{3}}{3}}{1-(2+\sqrt{3})x^2}+\frac{\frac{1}{2}-\frac{\sqrt{3}}{3}}{1-(2-\sqrt{3})x^2}\right)\\
+                              &=1+\sum_{i=1}^{\infty}\left[\left(\frac{3}{2}+\frac{5}{6}\sqrt{3}\right)(2+\sqrt{3})^{n-1}+\left(\frac{3}{2}-\frac{5}{6}\sqrt{3}\right)(2-\sqrt{3})^{n-1}\right]x^{2n}
+                \end{align*}
+                故
+                \[
+                A(2n)=\left(\frac{3}{2}+\frac{5}{6}\sqrt{3}\right)(2+\sqrt{3})^{n-1}+\left(\frac{3}{2}-\frac{5}{6}\sqrt{3}\right)(2-\sqrt{3})^{n-1}
+                \]
+
+            \end{solution}
+        \subsection{由$1,2$组成的可被$3$整除的$n$位数}
+        \emph{试问用$1,2$能组成多少种可整除$3$的$n$位数。}
+
+
+        \begin{solution} 
+            设由$1,2$组成的，模$3$余$0$，模$3$余$1$的，模$3$余$2$的$n$位数分别有$a(n)$，$b(n)$，$c(n)$种。分类讨论状态转移并考虑初始情况有：
+            \begin{align*}
+                &a(1)=0,b(1)=1,c(1)=1;\\
+                &a(0)=1,b(0)=0,c(0)=0;\\
+                &a(n)=b(n-1)+c(n-1), \qquad (n > 1) \\
+                &b(n)=a(n-1)+c(n-1), \qquad (n > 1) \\
+                &c(n)=a(n-1)+b(n-1), \qquad (n > 1)
+            \end{align*}
+
+            观察发现$b(n)$与$c(n)$恒等，上述方程转化为
+            \begin{align*}
+                &a(1)=0,b(1)=1;\\
+                &a(0)=1,b(0)=0;\\
+                &a(n)=2b(n-1), \qquad (n > 1)\\
+                &b(n)=b(n-1)+a(n-1), \qquad (n > 1)
+            \end{align*}
+            记$A(z)=\sum_{k=0}^{\infty}a(k)z^{k}$，$B(z)=\sum_{k=0}^{\infty}B(k)z^{k}$，有
+            \begin{align*}
+                    \left.\begin{array}{r}
+                        A(z)=2zB(z)+1\\
+                        B(z)=zB(z)+zA(z)
+                    \end{array}\right\} \Rightarrow
+                    B(z)=\frac{z}{1-z-2z^2}=\frac{1}{3(1-2z)}-\frac{1}{3(z+1)}
+            \end{align*}
+            将母函数展开求得系数$b(n)=\frac{2^n-(-1)^n}{3}$，进而有$a(n)=\frac{2^n+2(-1)^n}{3}$，即共有$\frac{2^n+2(-1)^n}{3}$种。
+        \end{solution}
+
+        \subsection{用偶数个$1$奇数个$2$组成的$n$位数}
+            \emph{试问用偶数个$1$和奇数个$2$能组成多少个不同的$n$位数。}
+
+
+        \begin{solution} 设由$a(n,0,0),a(n,0,1),a(n,1,0),a(n,1,1)$分别表示偶数个1偶数个2，偶数个1奇数个2，奇数个1偶数个2，奇数个1奇数个2组成的$n$位数的个数。分类讨论状态转移并考虑初始情况有：
+            \begin{align*}
+                &a(1,0,0)=0,a(1,0,1)=1,a(1,1,0)=1,a(1,1,1)=0;\\
+                &a(n,0,0)=a(n-1,0,1)+a(n-1,1,0), \qquad (n > 1)\\
+                &a(n,0,1)=a(n-1,1,1)+a(n-1,0,0), \qquad (n > 1)\\
+                &a(n,1,0)=a(n-1,1,1)+a(n-1,0,0), \qquad (n > 1)\\
+                &a(n,1,1)=a(n-1,0,1)+a(n-1,1,0), \qquad (n > 1)
+            \end{align*}
+
+            观察发现$n\geq1$时，$a(n,0,1)$与$a(n,1,0)$恒等，$a(n,0,0)$与$a(n,1,1)$恒等，令$A(n)=a(n,0,1),B(n)=a(n,0,0)$上述方程组转化为
+            \begin{align*}
+                &A(1) = 1, B(1) = 0;\\
+                &A(n)=2B(n-1), \qquad (n > 1)\\
+                &B(n)=2A(n-1), \qquad (n > 1)
+            \end{align*}
+            消元得：
+            \begin{align*}
+                &A(1) = 1,A(2) = 0; \\
+                &A(n) = 4A(n-2), \qquad  (n > 2)
+            \end{align*}
+            综上可得：
+            \begin{equation*}
+                A(n)=\begin{cases}
+                    2^{n-1},& \text{$n$为奇数}\\
+                    0,& \text{$n$为偶数}
+                \end{cases}
+            \end{equation*}
+        \end{solution}
+
+        \section{汉诺塔问题变形}
+        \emph{现有从左到右三根柱子，其中一号杆上套着$n$个圆环，从上到下依次编号为$1,2,3,\dots,n$，现需要把所有圆盘通过若干步移动转移到三号杆上，对于每步移动，有如下限制：
+        \begin{itemize}
+            \item [a.] 仅允许移动某个杆子最上面的盘子；
+
+            \item [b.] 仅允许将盘子移动到其之前所在位置右侧的杆子上。
+        \end{itemize}
+
+        在过程结束后，不同的移动方法可能会使盘子在三号杆上呈现不同的排列。试问可能的排列顺序有多少种。}
+
+        \begin{solution} 记$n$个盘子有$f(n)$种排列，考虑第一个盘子进入第二根杆子后何时被移动至第三根杆子。若第三根杆子有$i$个盘子时第一个盘子被移动至第三根杆子，则$i$个盘子有$f(i)$种排列，其余的$n-i-1$个盘子有$f(n-i-1)$种排列。从而得到递推式，注意这即是\emph{卡特兰数(Catalan Number)}的递推：
+        \begin{align*}
+                f(n)=\sum_{i=0}^{n-1}f(i)f(n-1-i)
+        \end{align*}
+        \end{solution}
+
+
+\end{document}

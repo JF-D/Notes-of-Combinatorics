@@ -1,0 +1,171 @@
+\documentclass[11pt]{article}
+
+\usepackage[a4paper]{geometry}
+\geometry{left=2.0cm,right=2.0cm,top=2.5cm,bottom=2.5cm}
+
+\usepackage{ctex}
+\usepackage{amsmath,amsfonts,graphicx,amssymb,bm,amsthm,mathrsfs}
+\usepackage{algorithm,algorithmicx}
+\usepackage[noend]{algpseudocode}
+\usepackage{fancyhdr}
+\usepackage{amsmath}
+
+\newcounter{counter_exm}\setcounter{counter_exm}{1}
+%\newcounter{counter_thm}\setcounter{counter_thm}{1}
+%\newcounter{counter_lma}\setcounter{counter_lma}{1}
+%\newcounter{counter_dft}\setcounter{counter_dft}{1}
+%\newcounter{counter_clm}\setcounter{counter_clm}{1}
+%\newcounter{counter_cly}\setcounter{counter_cly}{1}
+
+\newtheorem{theorem}{{\hskip 1.7em \bf 定理}}
+\newtheorem{lemma}[theorem]{\hskip 1.7em 引理}
+\newtheorem{proposition}[theorem]{Proposition}
+\newtheorem{claim}[theorem]{\hskip 1.7em 命题}
+\newtheorem{corollary}[theorem]{\hskip 1.7em 推论}
+\newtheorem{definition}[theorem]{\hskip 1.7em 定义}
+
+\renewcommand{\emph}[1]{\begin{kaishu}#1\end{kaishu}}
+
+\newenvironment{solution}{{\noindent\hskip 2em \bf 解 \quad}}
+
+\renewenvironment{proof}{{\noindent\hskip 2em \bf 证明 \quad}}{\hfill$\qed$\par}
+\newenvironment{example}{{\par\noindent\hskip 2em \bf 例 \arabic{counter_exm}\quad}}{\addtocounter{counter_exm}{1}\par\vskip1em}
+
+\newenvironment{concept}[1]{{\bf #1\quad} \begin{kaishu}} {\end{kaishu}\par}
+
+\newcommand\E{\mathbb{E}}
+
+\allowdisplaybreaks
+
+\begin{document}
+
+    \pagestyle{fancy}
+    \lhead{\kaishu 中国科学院大学}
+    \chead{}
+    \rhead{\kaishu 2017年秋季学期组合数学}
+
+    \begin{center}
+        {\LARGE \bf 组合数学第五讲}\\
+    \end{center}
+        \begin{kaishu}
+            授课时间: 2017年10月10日\quad
+            授课教师: 孙晓明
+            \hfill 记录人: 潘澳旋
+        \end{kaishu}
+
+
+    \section{卡特兰数（Catalan number）与栈排序数}
+
+    \begin{example}
+        有$n$元素有序集合$[a_1,\ldots,a_n]$和初始状态为空的栈$S$，我们希望将集合中的元素依序压进栈并在某时刻弹出，也就是说，我们将对该系统进行$2n$次操作：如果当先栈非空，我们可以选择将栈顶元素弹出；如果当前尚有元素未入栈，我们也可以选择将下一个待入栈元素压入栈。显然，不同的操作方案对应着不同的元素出栈顺序。请问，共有多少种可能的出栈顺序？
+    \end{example}
+
+    首先作如下分析。我们采取上一次课提供的基本解题方式：求解递推式然后通过递推式来获得通项。这一题中，我们注意到一个特殊的状态：栈为空。此时，我们下一步必须进行压栈操作，那么我们就以这个状态作为分类的标准—— 是不是有一个状态栈为空？或者更准确一点，在弹出几个元素以后栈为空？设可能的出栈顺序有$c_n$种，且假设弹出$i$个元素以后\textbf{第一次}出现栈空的状态，那么我们可以确定，第$i$个弹出的元素一定是$1$。 那么在$1$之前出栈的$i-1$ 个元素不收其余元素影响，可能的出栈顺序有$c_{i-1}$种；同样地，剩下$n-i$个元素入栈前栈已空，故其出入栈不受前$i$个元素影响，出栈顺序共有$c_{n-i}$种。
+    \vskip1em
+
+    \begin{solution}
+        通过分析我们得到了递推公式：
+        \[
+            c_n=\sum_{i=1}^nc_{n-i}c_{i-1}
+        \]
+        即$c_n=c_{n-1}c_0+\dots+c_0c_{n-1}$，注意到每一项脚标之和都是$n-1$，这种形式就让我们想起了以前学习多项式乘法时出现的情况，因此在我们使用生成函数解决递推式的时候就利用到这一点，设卡特兰数的生成函数为$\mathcal{A}(z)=\sum_{i\geq 0}c_iz^i$，将其平方展开
+        \[
+            \mathcal{A}(z)^2=\sum_{i\geq 0}\sum_{j=0}^i c_jc_{i-j}z^i=\sum_{i\geq 0}c_{i+1}z^i
+        \]其中$n$次项的系数恰好就是$c_{n+1}$，于是得到一个关于生成函数$\mathcal{A}(z)$的二次方程，
+        \[
+            z\mathcal{A}(z)^2-\mathcal{A}(z)+1=0
+        \]
+        解之便得到$\mathcal{A}(z)$的表达式然后就能直接读出通项。需要注意的是此时我们会得到两个解，在取舍的时候我们根据$\mathcal{A}(0)=c_0=1$排除掉了一种可能的情况，保留了另一种，这里通过分析容易做到。然后只需要对$\mathcal{A}(z)$进行幂展开即可。
+        \begin{align*}
+            \mathcal{A}(z)
+                &=\frac{1}{2z}[1-(1-4z)^\frac{1}{2}]\\
+                &=\frac{1}{2z}\left[1-\sum_{i\geq 0}(-4z)^i\binom{\frac{1}{2}}{i}\right]\\
+                &=-\frac{1}{2z}\sum_{i\geq 1}(-4)^i\frac{\frac{1}{2}\cdot\ldots\cdot(\frac{1}{2}-i+1)}{i!}z^i\\
+                &=\sum_{i\geq 1}z^{i-1}\frac{2i-2!}{i!(i-1!)}\\
+                &=\sum_{i\geq 0}z^i\frac{1}{i+1}\binom{2i}{i}
+        \end{align*}
+        这样我们就得到了通项$c_n=\frac{1}{n+1}\binom{2n}{n}$，这就是卡特兰数的解析式。
+
+        卡特兰数最早由莱昂哈德·欧拉（Leonhard Euler，1707—1783）提出，用来描述凸多边形的三角剖分数。欧仁·查理·卡特兰（Eug\'ene Charles Catalan，1814—1894）发现该数列与合法括号序列数的关系，后来该数列被命名为卡特兰数以纪念这位法国数学家。
+    \end{solution}
+
+    \section{卡特兰数的一些其他例子}
+
+    \subsection{凸多边形剖分数 }
+    \begin{example}
+        用凸$n$边形的在内部不相交的对角线将其剖分成若干三角形，求可能的剖分方案数$T(n)$。
+    \end{example}
+
+    依然采取通过分类计数获得递推式，然后通过求解递推式得到通项的策略，这里给出两种分类方式。
+
+    第一种从顶点的角度考虑，从任意定点开始顺时针将多边形的顶点标号为$v_1,v_2,\ldots,v_n$，以顶点$v_1$是否引出对角线作为分类标准：$v_1$未引出的情况，显然包含$T(n-1)$种方案；如$v_1$引出了若干条对角线，那么就考虑与$v_1$间有对角线的顶点中标号最小的点$v_i$，利用“标号最小”这一限制可知$v_2$到$v_i$必有连线，那么该情况下$v_1,\ldots,v_i$围成的多边形的剖分方案数为$T(i-1)$，对于$v_i,v_{i+1},\ldots,v_n,v_1$围成的多边形的剖分没有任何限制，故其剖分方案数为$T(n-i+2)$，根据乘法原理我们得到递推式：
+    \begin{gather*}
+        T(n)=T(n-1)+\sum_{i=3}^{n-1}T(n-i+2)T(i-1)=\sum_{i=3}^n T(n-i+2)T(i-1)\\
+        T(n+2)=\sum_{i=3}^{n+2} T(n-i+4)T(i-1)=\sum_{i=1}^{n} T(n-i+2)T(i-1+2)=c_n
+    \end{gather*}
+
+    第一种从边的角度考虑，考虑边$v_1\sim v_2$所属的三角形的另一个顶点$v_k$所在，三角形将$(v_1,v_2,v_k)$ 分为点为$k-1$和$n-k+2$的多边形，于是得到递推式：
+    \begin{gather*}
+        T(n)=\sum_{k=3}^n T(k-1)T(n-k+2)\\
+        T(n+2)=\sum_{k=3}^{n+2} T(k-1)T(n-k+4)=\sum_{k=1}^{n} T(k-1+2)T(n-k+2)=c_n
+    \end{gather*}
+
+    \subsection{二叉树的数目}
+    \begin{example}
+        包含$n$个叶子的二叉树有多少种？
+    \end{example}
+    通过对较小的$n$的试探，我们发现的确符合卡特兰数。我们根据树根左子树中的叶子数目将所有情况分为若干类。设左支有$i$片叶子，则右支有$n-i$片叶子，这样就把问题归结到$i$和$n-i$的子问题，得到递推式再求解通项可知该数目就是卡特兰数，具体证明留作课后练习。
+
+    \subsection{合法的加括号方式}
+    \begin{example}
+        由$n$对括号组成的合法括号序列有多少种？
+    \end{example}
+    这里我们借鉴压、弹栈的思考题，因为考虑到合法的添加方式与“栈空”这一状态有着密切的联系。把左括号与压栈对应，弹栈与右括号对应，两种模型就几乎完全对应起来，即合法的匹配数目就是卡特兰数，具体证明留作课后练习。
+
+    \section{作图法解初始栈非空的栈排序数}
+    考虑栈排序数问题的一种变型。
+    \begin{example}
+        如果开始的时候栈底已经有$m$个元素，那么会有多少种可能的出栈顺序呢？
+    \end{example}
+
+    这一次，我们不使用递推式和母函数而是采取作图法求解。
+
+    我们有一只聪明的小蚂蚁，现在处于平面直角坐标系的原点$O=(0,0)$处，每当我们进行一次压栈操作他就沿着$x$轴正方向移动一格，每当我们进行一次弹栈操作他就沿着$y$轴正方向移动一格，因为在该问题中需弹出$n+m$次、压入$n$次，故最终他会到达点$T=(n,m+n)$，设某时刻蚂蚁在$(x,y)$，考虑到栈空之后不能弹栈这一原则，有约束$y\leq x+m$，即与直线$y=x+m+1$有交点的路径是非法的。显然，每条合法的最短路径对应一种压栈弹栈方案。合法的最短路径数就等于总的最短路径数减去非法最短路径数，总的路径共有$\binom{2n+m}{n}$条，问题转化为求非法路径数。我们找到原点关于直线$y=x+m+1$的对称点$M=(-m-1,m+1)$，考虑$M$到$T$的所有最短路径，可以证明这样的路径与$O$到$T$的所有不合法的最短路径一一对应：对于任意$O$到$T$的不合法的最短路径，其必存与$y=x+m+1$相交，我们找到其中的最左交点$P$，将该路径$O$到$P$的部分沿着$y=x+m+1$对称翻转得到一条$M$到$T$的最短路径；考虑这个映射的逆，对于任意的$M$到$T$的最短路径（显然其必经过$y=x+m+1$），找到其与$y=x+m+1$的最左交点$P$，该路径$O$到$P$的部分沿着$y=x+m+1$ 对称翻转得到一条$O$到$T$的最短路径，且这条路径是非法的，综上，这两类路径间存在一一对应关系，故不合法路径数等于$M$到$T$的最短路径数$\binom{2n+m}{n-1}$。所以合法的路径数就等于二者之差，为$\frac{m+1}{n+m+1}\binom{2n+m}{n}$条，其中$m=0$的特例就是卡特兰数。
+
+    下面举例来进一步熟悉作图法。我们都知道，概率是源于赌场的，假想你现在来到了拉斯维加斯，想要去体验一下当地的赌场，为了避免自己沉迷其中无法自拔，只带一元钱进入娱乐一下，而且你能保持理智不会去借钱，这就意味着一旦你的钱数变为零便无法继续玩下去，你决定参与猜单双，假定你来到了一个十分正经的赌场，你赢和输的概率各占一半，那么我们想知道的是，你是否总会输光？还是说有那么一点可能你会把赌场赢到$\dots$关门？
+
+    设我们参与$i$次后输光离开赌场，用M表示我们的钱数，分析容易知道，$i$只能为奇数$2k+1$，而且最后一次一定是输掉的，即我们只需要考虑前$2k$步。这时候，我们的小蚂蚁要完成的是从$S=(0,0)$点到达点$T=(k,k)$ （其中每赢一次沿$x$ 轴正方向移动一格，每输一局沿$y$轴正方向移动一格），那么总的路径数为$\binom{2k}{k}$，这一次非法的路径是与直线直线$y=x+1$有交点的路径，同样找到$S$关于该直线的对称点$S'=(-1,1)$，和上面一样利用两个点到终点路径的对应关系，得到非法的路径数为$\binom{2k}{k+1}$，相减得到合法的路径数为$\frac{1}{k+1}\binom{2k}{k}$，于是得到恰在第$2k+1$次参与后输光离开的概率为$\frac{1}{k+1}\binom{2k}{k}\frac{1}{2}^{2k+1}$，那么对$k$求和便能发现最终输光离开的概率是$1$（稍后我们会给出更一般的版本的具体过程）。也就是说，即使在如此正经的赌场，你还是会输光...
+
+    进一步探讨，我们假设每次赢的概率为$p$，累计所有奇数步输光的概率，得到
+    \begin{align*}
+        \sum_{k\geq 0}\frac{\binom{2k}{k}}{k+1}p^k(1-p)^{k+1}&=(1-p)\mathcal{A}(p(1-p))\\
+        &=(1-p)\cdot\frac{1}{2p(1-p)}[1-\sqrt{1-4p(1-p)}]\\
+        &=\frac{1-|1-2p|}{2p}
+    \end{align*}
+    这样我们就直观的看到我们输光的概率与$p$的关系。当$p\leq 1/2$时，累计概率恒为$1$，即只要概率不大于$\frac{1}{2}$，赌徒会以$1$的概率输光，印证了我们之前的结论；有意思的是当$p>\frac{1}{2}$ 时，我们输光的概率是小于$1$的，那么剩下的概率去了哪里呢？答案是在这部分概率下，你会一直赢下去，也就是说，如果有一个赌场老板设定的你赢的概率大于$\frac{1}{2}$，那么有可能你会一直赢到赌场关门...
+
+    设我们会在第$T$次输光，我们想知道输光时参与次数的期望值$E[T]$，当赢的概率$p\leq \frac{1}{2}$时，可计算期望
+    \begin{align*}
+        E[T]&=\sum_{k\geq 0}\frac{2k+1}{k+1}\binom{2k}{k}p^k(1-p)^{k+1}\\
+        \mathcal{A}(z)&=\sum_{k\geq 0}\frac{1}{k+1}\binom{2k}{k}z^k\\
+        2z\mathcal{A}'(z)+\mathcal{A}(z)&=\sum_{k\geq 0}\frac{2k+1}{k+1}\binom{2k}{k}z^k\\
+        \mathcal{A}(z)&=\frac{1}{2z}[1-(1-4z)^\frac{1}{2}]\\
+        \mathcal{A}(z)'&=\frac{4z(1-4z)^{-\frac{1}{2}}-2+(1-4z)^\frac{1}{2}}{4z^2}\\
+        E[T]&=(1-p)\cdot(2p(1-p)\mathcal{A}'(p(1-p))+\mathcal{A}(p(1-p)))\\
+        &=(1-p)\cdot\bigg(2p(1-p)\frac{4p(1-p)(1-4p(1-p))^{-\frac{1}{2}}-2+2(1-4p(1-p))^\frac{1}{2}}{4(p(1-p))^2}\\
+        &\quad +\frac{1-(1-4p(1-p))^\frac{1}{2}}{2p(1-p)}\bigg)\\
+        &=\frac{2-2p}{|1-2p|}-\frac{1-|1-2p|}{2p}\\
+        &=\frac{1}{1-2p}
+    \end{align*}
+    即当概率为$\frac{1}{2}$时平均需要无限次才会输光。
+
+    大家有兴趣可以去参考介绍“随机游走”的书籍，有很多与此相关的有趣问题。在这里给大家举一个有趣的“栗子”：喝醉的酒鬼总能找到回家的路，喝醉的小鸟则可能永远也回不了家。
+
+    假设有一条水平直线，从某个位置出发，每次有$\frac{1}{2}$的概率向左走$1$米，有$\frac{1}{2}$的概率向右走$1$米。按照这种方式无限地随机游走下去，最终能回到出发点的概率是多少？答案是$1$。在一维随机游走过程中，只要时间足够长，我们最终总能回到出发点。
+
+    现在考虑一个喝醉的酒鬼，他在街道上随机游走。假设整个城市的街道呈网格状分布，酒鬼每走到一个十字路口，都会概率均等地选择一条路（包括自己来时的那条路）继续走下去。那么他最终能够回到出发点的概率是多少呢？答案也还是$1$。刚开始，这个醉鬼可能会越走越远，但最后他总能找到回家路。
+    不过，醉酒的小鸟就没有这么幸运了。假如一只小鸟飞行时，每次都从上、下、左、右、前、后中概率均等地选择一个方向，那么它很有可能永远也回不到 出发点了。
+
+    事实上，在三维网格中随机游走，最终能回到出发点的概率只有大约$0.34$。
+    这个定理是著名数学家波利亚（George P\'olya，1887—1985）在1921年证明的。随着维度的增加，回到出发点的概率将变得越来越低。在四维网格中随机游走，最终能回到出发点的概率是$0.193$,而在八维空间中，这个概率只有$0.073$ 。
+\end{document}

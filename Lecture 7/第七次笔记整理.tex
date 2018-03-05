@@ -1,0 +1,343 @@
+% !TEX encoding = System
+\documentclass[11pt]{article}
+
+\usepackage[a4paper]{geometry}
+\geometry{left=2.0cm,right=2.0cm,top=2.5cm,bottom=2.5cm}
+
+\usepackage{ctex}
+\usepackage{amsmath,amsfonts,graphicx,amssymb,bm,amsthm}
+\usepackage{algorithm,algorithmicx}
+\usepackage[noend]{algpseudocode}
+\usepackage{fancyhdr}
+\usepackage{verbatim}
+
+\newcounter{counter_exm}\setcounter{counter_exm}{1}
+%\newcounter{counter_thm}\setcounter{counter_thm}{1}
+%\newcounter{counter_lma}\setcounter{counter_lma}{1}
+%\newcounter{counter_dft}\setcounter{counter_dft}{1}
+%\newcounter{counter_clm}\setcounter{counter_clm}{1}
+%\newcounter{counter_cly}\setcounter{counter_cly}{1}
+
+\newtheorem{theorem}{{\hskip 1.7em \bf 定理}}
+\newtheorem{lemma}[theorem]{\hskip 1.7em 引理}
+\newtheorem{proposition}[theorem]{Proposition}
+\newtheorem{claim}[theorem]{\hskip 1.7em 命题}
+\newtheorem{corollary}[theorem]{\hskip 1.7em 推论}
+\newtheorem{definition}[theorem]{\hskip 1.7em 定义}
+
+\renewcommand{\emph}[1]{\begin{kaishu}#1\end{kaishu}}
+
+\newenvironment{solution}{{\noindent\hskip 2em \bf 解 \quad}}
+
+
+\renewenvironment{proof}{{\noindent\hskip 2em \bf 证明 \quad}}{\hfill$\qed$\par}
+\newenvironment{example}{{\noindent\hskip 2em \bf 例 \arabic{counter_exm}\quad}}{\addtocounter{counter_exm}{1}\par\vskip1em}
+
+\newenvironment{concept}[1]{{\bf #1\quad} \begin{kaishu}} {\end{kaishu}\par}
+
+\newcommand\E{\mathbb{E}}
+
+\begin{document}
+
+    \pagestyle{fancy}
+    \lhead{\kaishu 中国科学院大学}
+    \chead{}
+    \rhead{\kaishu 2017年秋季学期组合数学}
+
+    \begin{center}
+        {\LARGE \bf 组合数学第七讲}\\
+    \end{center}
+        \begin{kaishu}
+            授课时间: 2017年10月24日\quad
+            授课教师: 孙晓明
+            \hfill 记录人: 陈灿宇\quad 刘庚
+        \end{kaishu}
+
+    \section{100囚徒问题}
+    \begin{example}
+        \emph{有$80$个学生，编号$1\sim80$。在一个封闭的房间里放置$80$个信封，编号也为$1\sim80$。另外有编号为$1\sim80$的$80$封信被随机放在信封中，每个信封内放一张。学生依次进入房间，每人最多打开$40$个信封，如果打开信封后里面的信的编号与自己的编号一致，则该学生成功达成目标。当且仅当所有学生达成目标，学生获胜。学生在进入房间前可以商讨一个策略。使用怎样的策略才能有较大的可能获胜？}
+     \end{example}
+    
+    首先考虑最简单的策略，每个同学都随机取，那么每个人可以看到自己的信件的概率就是$\frac{1}{2}$，所有同学都能看到自己信件的概率是$\frac{1}{2^{80}}$，这是一个非常小的概率。那么有没有什么方法可以让这个概率更大一些呢？考虑上节课给出的策略：
+    \begin{itemize}
+        \item [1.] 每个学生首先打开与自己编号相同的信封；
+        \item [2.] 如果信封里就是与其编号相同的信，则达成目标；
+        \item [3.] 否则，他接下来打开与该信封内信相同编号的信封；
+        \item [4.] 重复2，3步，直至达成目标或打开40个信封为止。
+    \end{itemize}
+    用这种方法，所有同学都取到自己的信的概率又是多少？
+
+    这些信封以及里面的信可以看作是一个置换，每一个信封和里面的信都可以看作是从一个编号指向另一个编号的映射。如果有某位同学以这样的方法取却没有取到自己的信，那么说明在这个置换里必然存在一个长度大于$40$的循环。因为一共只有$80$个信封，所以一个置换中最多只存在一个这样的循环。存在这样循环的概率为：
+    \begin{align*}
+        %H_n &= \sum_{i=1}^{n}\frac{1}{i}\\
+        %Pr(\exists\pi (i)\ge 41)&=\sum_{k=\frac{n}{2}+1}^{n}\frac{{n \choose k}(k-1)!(n-k)!}{n!}\\
+        &\sum_{k=\lfloor\frac{n}{2}\rfloor+1}^{n}{n \choose k}\frac{(k-1)!(n-k)!}{n!}\\
+        =&\sum_{k=\lfloor\frac{n}{2}\rfloor+1}^{n}\frac{1}{k}\\
+        =&H_n-H_{\lfloor\frac{n}{2}\rfloor}\approx\ln{n}+c-(\ln{\frac{n}{2}}+c)=\ln2\approx69\%
+    \end{align*}
+    其中$H_n$为调和级数，定义$H_n:=\sum_{k\geq 1}\frac{1}{k}$。所以存在这样的循环的概率大约为69\%，也就是说如果按照这种方法去取，有31\%的概率大家都可以拿到自己的信。对于这道题，这个方法也已经被证明是最好的方法。
+    
+    这个问题中每个人可以看一半的信封，即如果不成功则最长轨道长度大于一半，而这样的循环只有一个，所以考虑起来较为简单，但是如果更改题设，使得每个人可以看的信封更少，问题就会复杂得多。
+
+
+    \section{第一类斯特林数（Stirling Number of First Kind）}
+    \begin{definition}[第一类斯特林数]
+        在$S_n$上的恰有$k$个循环的置换$\pi$的个数定义为第一类斯特林数，即
+        \[
+            S_1(n,k)=|\{\pi\in S_n | \pi \textrm{中恰有$k$个循环} \}|
+        \]
+    \end{definition}
+    当$k=1$时，$S_1(n,k)$就等于$n$个元素的圆排列的个数，即：
+    \[
+        S_1(n,1)=(n-1)!
+    \]
+    如果$k$=$n$，那么就是全部元素都是自己到自己的循环，只有一种，即：
+    \[
+        S_1(n,n)=1
+    \]
+    如果$k=2$，那么
+    \begin{align*}
+        S_1(n,2)&=\sum_{k=1}^{n-1}{n-1 \choose k-1}(k-1)!(n-k-1)!\\
+        &=\sum_{k=1}^{n-1}\frac{(n-1)!}{n-k}\\
+        &=\sum_{k=1}^{n-1}\frac{(n-1)!}{k}\\
+        &=(n-1)!H_{n-1}
+    \end{align*}
+    
+    假设现在有一个有$n$个元素的置换$\pi$，其中有$k$个循环。我们随意从中取走一个元素$e$，并将被取走元素的前一个和后一个元素连起来，即令$\pi(\pi^{-1}(e))=\pi(e)$，那么我们就得到了一个有$n-1$个元素和$k$个循环的置换。需要注意，如果我们取走的这个元素本来就是一个从自己到自己的循环，那么我们得到的是一个有$n-1$个元素和$k-1$个循环的置换。反过来考虑，我们在有$n-1$个元素的$k$循环置换中的某个循环上加一个元素，或者在一个有$n-1$个元素的$k-1$循环置换中加一个元素自己组成的循环，会得到有$n$个元素的$k$循环置换。而增加一个元素又有$n-1$种可能的位置，所以我们得到如下的递推关系：
+    \[S_1(n,k)=(n-1)\cdot S_1(n-1,k)+S_1(n-1,k-1)\]
+    
+    第一类斯特林数与$x$的升$n$阶乘的系数有关，回顾定义：
+    \[x^{\overline{n}}:=x(x+1)(x+2)\cdot\ldots\cdot(x+n-1)\]
+    类似地，$x$的降$n$阶乘定义为：
+    \[x^{\underline{n}}:=x(x-1)(x-2)\cdot\ldots\cdot(x-n+1)\]
+    每个$S_1(n,k)$都对应于升$n$阶乘的$k$次项系数，即：
+    \begin{theorem}
+        对于任意$n\in \mathbb{N}$，有：
+        \[x^{\overline{n}}=\sum_{k=0}^{n}S_1(n,k)x^k\]
+    \end{theorem}
+    这也是第一类斯特林数的代数解释。与之相应地，对于正整数$n$我们定义$S_1(n,0)=1$，特别定义$S_1(0,0)=1$。下面用归纳法来证明定理2：
+    
+    \begin{proof}
+        当$n=1$时有$S_1(1,1)=1$，易知定理2成立。假设当$n=m\geq 1$时定理2成立，那么当$n=m+1$时，由归纳假设可推知
+        \begin{align*}
+            x^{\overline{m+1}}&=(x+m)x^{\overline{m}}\\
+            &=\sum_{k=0}^{m}(x+m)S_1(m,k)x^k\\
+            &=\sum_{k=0}^{m}S_1(m,k)x^{k+1}+\sum_{k=0}^{m}mS_1(m,k)x^k\\
+            &=\sum_{k=1}^{m+1}S_1(m,k-1)x^{k}+\sum_{k=0}^{m}mS_1(m,k)x^k\\
+            &=\sum_{k=0}^{m+1}S_1(m+1,k)x^k
+        \end{align*}
+    \end{proof}
+
+    升$n$阶乘与降$n$阶乘之间唯一的区别就是系数的正负，易推知第一类斯特林数与降$n$阶乘系数之间的关系：
+    \[
+        x^{\underline{n}}=\sum_{k=0}^{n}(-1)^{n-k}S_1(n,k)x^k=\sum_{k=0}^n(-1)^{n+k}S_1(n,k)x^k
+    \]
+    一般来说我们对于降$n$阶乘较为熟悉，所以有时定义第一类斯特林数为$S_1(n,k):=(-1)^{n+k}S_1'(n,k)$，其中$S_1'(n,k)$就是我们之前讨论的第一类斯特林数，又称去符号的第一类斯特林数（我们的课程中不采用这样的定义）。另外值得一提的是第一类斯特林数有类似组合数的符号$\genfrac{[}{]}{0pt}{}{n}{k}$表示$S_1(n,k)$。
+
+    \section{第二类斯特林数（Stirling Number of Second Kind)}
+    \begin{definition}[第二类斯特林数]
+        第二类斯特林数$S_2(n,k)$计数的是把$n$元素集合划分到$k$个不可区分的盒子中且没有空盒子的划分个数。
+    \end{definition}
+    为了加深理解，我们来观察一些特殊的第二类斯特林数。考虑$k=1$和$k=n$的情况，只有一个盒子或者有$n$个非空的盒子时，划分方法唯一，即：
+    \[
+        S_2(n,1)=S_2(n,n)=1
+    \]
+    如果$k=2$，那么
+    \begin{align*}
+        S_2(n,2)&=\sum_{k=1}^{n-1}{n-1\choose k-1}=2^{n-1}-1
+    \end{align*}
+    
+    类似于第一类斯特林数，我们希望通过组合方法找到其递推关系。假设现在有一个$n$元素集合的$k$划分，我们随意从中取走一个元素，那我们就得到了一个$n-1$元素集合的$k$划分，如果我们取走的元素所在的划分子集只有一个元素，那么我们得到的是$n-1$个元素集合的$k-1$划分。也就是说我们想得到一个$n$元素集合的$k$划分，要么在$n-1$元素集合的$k$划分中向任意划分子集加入一个元素，要么在$n-1$元素集合的$k-1$划分加入一个元素作为新的划分子集。综上我们可以得到如下递推关系：
+    \[S_2(n,k)=k\cdot S_2(n-1,k)+S_2(n-1,k-1)\]
+    
+    与第一类斯特林数类似，我们也可以通过$\{x^k\}_{k\geq 0}$和$\{x^{\underline{k}}\}_{k\geq 0}$这两组基之间的相互转换来给第二类斯特林数一种代数解释。
+    \begin{theorem}
+        对于任意$n\in \mathbb{N}$，有：
+        \[x^n=\sum_{k=0}^{n}S_2(n,k)x^{\underline{k}}\]
+    \end{theorem}
+    \begin{proof}
+        当$n=1$时有$S_2(1,1)=1$，易知定理2成立。假设当$n=m\geq 1$时定理4成立，那么当$n=m+1$时，由归纳假设可推知
+        \begin{align*}
+            x^{m+1}&=x\cdot x^m\\
+            &=\sum_{k=0}^m xS_2(m,k)x^{\underline{k}}\\
+            &=\sum_{k=0}^m (x-k)S_2(m,k)x^{\underline{k}}+\sum_{k=0}^m k S_2(m,k)x^{\underline{k}}\\
+            &=\sum_{k=0}^m S_2(m,k)x^{\underline{k+1}}+\sum_{k=0}^m k S_2(m,k)x^{\underline{k}}\\
+            &=\sum_{k=1}^{m+1} S_2(m,k-1)x^{\underline{k}}+\sum_{k=0}^m k S_2(m,k)x^{\underline{k}}\\
+            &=\sum_{k=0}^{m+1} S_2(m+1,k) x^{\underline{k}}
+        \end{align*}
+    \end{proof}
+    第二类斯特林数有类似组合数的符号$\genfrac{\{}{\}}{0pt}{}{n}{k}$表示$S_2(n,k)$。
+    \section{两类斯特林数的关联}
+    回顾定理2与定理4，我们发现两类斯特林数均与$\{x^k\}_{k\geq 0}$和$\{x^{\underline{k}}\}_{k\geq 0}$这两组基之间相互变换有关，具体地，$\{x^{\underline{k}}\}_{k\geq 0}$到$\{x^k\}_{k\geq 0}$的变换可表示为：
+    \begin{gather*}
+        \begin{bmatrix}
+            x^0\\ x^1\\ x^2\\ x^3\\ \vdots\\ x^n
+        \end{bmatrix}
+        =\begin{bmatrix}
+            S_2(0,0)& 0& 0& 0& \cdots & 0\\
+            S_2(1,0)& S_2(1,1)& 0& 0& \cdots & 0\\
+            S_2(2,0)& S_2(2,1)& S_2(2,2)& 0& \cdots & 0\\
+            S_2(3,0)& S_2(3,1)& S_2(3,2)& S_2(3,3)& \cdots & 0\\
+            \vdots& \vdots& \vdots& \vdots& \ddots & \vdots\\
+            S_2(n,0)& S_2(n,1)& S_2(n,2)& S_2(n,3)& \cdots & S_2(n,n)
+        \end{bmatrix}\cdot
+        \begin{bmatrix}
+            x^{\underline{0}}\\ x^{\underline{1}}\\ x^{\underline{2}}\\ x^{\underline{3}}\\ \vdots\\ x^{\underline{n}}
+        \end{bmatrix}
+    \end{gather*}
+    其中变换矩阵记为$S_{2,n}$。同理，$\{x^k\}_{k\geq 0}$到$\{x^{\underline{k}}\}_{k\geq 0}$的变换可表示为：
+    \begin{gather*}
+        \begin{bmatrix}
+            x^{\underline{0}}\\ x^{\underline{1}}\\ x^{\underline{2}}\\ x^{\underline{3}}\\ \vdots\\ x^{\underline{n}}
+        \end{bmatrix}
+        =\begin{bmatrix}
+            S_1(0,0)& 0& 0& 0& \cdots & 0\\
+            -S_1(1,0)& S_1(1,1)& 0& 0& \cdots & 0\\
+            S_1(2,0)& -S_1(2,1)& S_1(2,2)& 0& \cdots & 0\\
+            -S_1(3,0)& S_1(3,1)& -S_1(3,2)& S_1(3,3)& \cdots & 0\\
+            \vdots& \vdots& \vdots& \vdots& \ddots & \vdots\\
+            (-1)^nS_1(n,0)& (-1)^{n+1}S_1(n,1)& (-1)^{n+2}S_1(n,2)& (-1)^{n+3}S_1(n,3)& \cdots & S_1(n,n)
+        \end{bmatrix}\cdot
+        \begin{bmatrix}
+            x^0\\ x^1\\ x^2\\ x^3\\ \vdots\\ x^n
+        \end{bmatrix}
+    \end{gather*}
+    其中变换矩阵记为$S_{1,n}$。
+    
+    显然，两变换矩阵互逆，即$S_{1,n}S_{2,n}=I$，注意到这里的矩阵规模可以取到任意大，从而有对于任意自然数$n,m\in \mathbb{N}$：
+    \[
+        \sum_{k} (-1)^{n+k}S_1(n,k)S_2(k,m) = \delta_{n,m}
+    \]
+    
+    考察两类斯特林数之间的关系后我们不禁要问，是否组合数与某类数之间也存在类似的关系呢？实际上，我们可以将二项式定理表示成如下形式：
+    \[
+        \begin{bmatrix}
+            (x+1)^0\\ (x+1)^1\\ (x+1)^2\\ (x+1)^3\\ \vdots\\ (x+1)^n
+        \end{bmatrix}
+        =\begin{bmatrix}
+            \binom{0}{0}& 0& 0& 0& \cdots & 0\\
+            \binom{1}{0}& \binom{1}{1}& 0& 0& \cdots & 0\\
+            \binom{2}{0}& \binom{2}{1}& \binom{2}{2}& 0& \cdots & 0\\
+            \binom{3}{0}& \binom{3}{1}& \binom{3}{2}& \binom{3}{3}& \cdots & 0\\
+            \vdots& \vdots& \vdots& \vdots& \ddots & \vdots\\
+            \binom{n}{0}& \binom{n}{1}& \binom{n}{2}& \binom{n}{3}& \cdots &\binom{n}{n}
+        \end{bmatrix}\cdot
+        \begin{bmatrix}
+            x^0\\ x^1\\ x^2\\ x^3\\ \vdots\\ x^n
+        \end{bmatrix}
+    \]
+    其中变换矩阵记为$S_1$；同理：
+    \[
+        \begin{bmatrix}
+            (x-1)^0\\ (x-1)^1\\ (x-1)^2\\ (x-1)^3\\ \vdots\\ (x-1)^n
+        \end{bmatrix}
+        =\begin{bmatrix}
+            \binom{0}{0}& 0& 0& 0& \cdots & 0\\
+            -\binom{1}{0}& \binom{1}{1}& 0& 0& \cdots & 0\\
+            \binom{2}{0}& -\binom{2}{1}& \binom{2}{2}& 0& \cdots & 0\\
+            -\binom{3}{0}& \binom{3}{1}& -\binom{3}{2}& \binom{3}{3}& \cdots & 0\\
+            \vdots& \vdots& \vdots& \vdots& \ddots & \vdots\\
+            (-1)^n\binom{n}{0}& (-1)^{n+1}\binom{n}{1}& (-1)^{n+2}\binom{n}{2}& (-1)^{n+3}\binom{n}{3}& \cdots &\binom{n}{n}
+        \end{bmatrix}\cdot
+        \begin{bmatrix}
+            x^0\\ x^1\\ x^2\\ x^3\\ \vdots\\ x^n
+        \end{bmatrix}
+    \]
+    其中变换矩阵记为$S_2$。显然，这两个矩阵互逆，即$S_1S_2=I$，可推知：
+    \[
+        \sum_{k}(-1)^{k+m}\binom{n}{k}\cdot\binom{k}{m}=\delta_{n,m}
+    \]
+    将左侧求和也可以得到右侧的结果。
+    
+    \section{第二类斯特林数的展开式}
+    \begin{theorem}
+    对于任何$n, k\in \mathbb{N}$且$n\geq k$，有：
+    \[
+        S_2(n,k)=\frac{1}{k!}\sum_{i=0}^{k}\binom{k}{i} i^n
+    \]
+    \end{theorem}    
+    \begin{proof}
+        根据定理4，易知
+        \begin{gather*}
+            \begin{bmatrix}
+                0^n \\1^n \\ \vdots \\ n^n
+            \end{bmatrix}=
+            \begin{bmatrix}
+                0^{\underline{0}} & 0 & \ldots & 0 \\
+                1^{\underline{0}} & 1^{\underline{1}} & \ldots & 0 \\
+                \vdots & \vdots & \ddots & \vdots\\
+                n^{\underline{0}} & n^{\underline{1}} & \ldots & n^{\underline{n}}
+            \end{bmatrix}\cdot
+            \begin{bmatrix}
+                S_2(n,0) \\S_2(n,1) \\ \vdots \\S_2(n,n)
+            \end{bmatrix}\\
+            \begin{bmatrix}
+                0^n \\1^n \\ \vdots \\ n^n
+            \end{bmatrix}=
+            \begin{bmatrix}
+                0^{\underline{0}} & 0 & \ldots & 0 \\
+                1^{\underline{0}} & 1^{\underline{1}} & \ldots & 0 \\
+                \vdots & \vdots & \ddots & \vdots\\
+                n^{\underline{0}} & n^{\underline{1}} & \ldots & n^{\underline{n}}
+            \end{bmatrix}\cdot
+            \begin{bmatrix}
+                \frac{1}{0!} &   &   &   \\
+                  & \frac{1}{1!} &   &   \\
+                  &   & \ddots &   \\
+                  &   &   & \frac{1}{n!}
+            \end{bmatrix}\cdot
+            \begin{bmatrix}
+                0! &   &   &   \\
+                  & 1! &   &   \\
+                  &   & \ddots &   \\
+                  &   &   & n!
+            \end{bmatrix}\cdot
+            \begin{bmatrix}
+                S_2(n,0) \\S_2(n,1) \\ \vdots \\S_2(n,n)
+            \end{bmatrix}\\
+            \begin{bmatrix}
+                0^n \\1^n \\ \vdots \\ n^n
+            \end{bmatrix}=
+            \begin{bmatrix}
+                \binom{0}{0} & 0 & \ldots & 0 \\
+                \binom{1}{0} & \binom{1}{1} & \ldots & 0 \\
+                \vdots & \vdots & \ddots & \vdots\\
+                \binom{n}{0} & \binom{n}{1} & \ldots & \binom{n}{n}
+            \end{bmatrix}\cdot
+            \begin{bmatrix}
+                0!\cdot S_2(n,0) \\ 1!\cdot S_2(n,1) \\ \vdots \\n!\cdot S_2(n,n)
+            \end{bmatrix}
+        \end{gather*}
+        
+        上一节中，我们求得了组合数方阵的逆矩阵，等式两侧左乘这个逆矩阵得到
+        \[
+            \begin{bmatrix}
+                \binom{0}{0}& 0& 0& 0& \cdots & 0\\
+                -\binom{1}{0}& \binom{1}{1}& 0& 0& \cdots & 0\\
+                \binom{2}{0}& -\binom{2}{1}& \binom{2}{2}& 0& \cdots & 0\\
+                -\binom{3}{0}& \binom{3}{1}& -\binom{3}{2}& \binom{3}{3}& \cdots & 0\\
+                \vdots& \vdots& \vdots& \vdots& \ddots & \vdots\\
+                (-1)^n\binom{n}{0}& (-1)^{n+1}\binom{n}{1}& (-1)^{n+2}\binom{n}{2}& (-1)^{n+3}\binom{n}{3}& \cdots &\binom{n}{n}
+            \end{bmatrix}\cdot
+            \begin{bmatrix}
+                0^n\\ 1^n\\ 2^n\\ 3^n\\ \vdots\\ n^n
+            \end{bmatrix}=
+            \begin{bmatrix}
+                0!\cdot S_2(n,0)\\ 1!\cdot S_2(n,1)\\ 2!\cdot S_2(n,2)\\ 3!\cdot S_2(n,3)\\ \vdots\\ n!\cdot S_2(n,n)
+            \end{bmatrix}
+        \]
+        取其中第$k$行，两侧同除$k!$得到：
+        \[S_2(n,k) = \frac{1}{k!}\sum_{i\geq 0}(-1)^{k+i}\binom{k}{i} i^n\]
+    \end{proof}
+    我们也可以通过组合的方法证明定理5，这里给出应用容斥原则的证明：
+    
+    \begin{proof}
+        考虑第二类斯特林数的定义：将$n$个不同的小球装入$k$个有区别的盒子中, 且无一空盒的方案数。先考虑盒子可区分的情况，对于$1\leq i\leq k$定义集合$A_i$表示第$i$个盒子是空的方案集合，那么符合要求的总方案数即为$|\bigcap_{i=1}^k\overline{A_i}|$，应用容斥公式展开得到：
+        \begin{align*}
+            |\bigcap_{i=1}^k\overline{A_i}|&=k^n+\sum_{j=1}^k(-1)^j\sum_{1\leq i_1<i_2<\cdots<i_j\leq k}|A_{i_1}\cap A_{i_2}\cap\cdots\cap A_{i_j}|\\
+            &=k^n+\sum_{j=1}^k(-1)^j\binom{k}{j}(k-j)^n=\sum_{j\geq 0}(-1)^{k+j}\binom{k}{j} j^n
+        \end{align*}
+        当盒子不可区分时，应对原方案数除以盒子数的全排列数得到符合要求的方案总数为：
+        \[S_2(n,k)=\frac{1}{k!}\sum_{i\geq 0}(-1)^{k+i}\binom{k}{i} i^n\]
+    \end{proof}
+\end{document}

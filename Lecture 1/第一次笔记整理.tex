@@ -1,0 +1,256 @@
+﻿\documentclass[11pt]{article}
+
+\usepackage[a4paper]{geometry}
+\geometry{left=2.0cm,right=2.0cm,top=2.5cm,bottom=2.5cm}
+
+\usepackage{ctex}
+\usepackage{amsmath,amsfonts,graphicx,amssymb,bm,amsthm}
+\usepackage{algorithm,algorithmicx}
+\usepackage[noend]{algpseudocode}
+\usepackage{fancyhdr}
+\usepackage{hyperref}
+
+\newcounter{counter_exm}\setcounter{counter_exm}{1}
+%\newcounter{counter_thm}\setcounter{counter_thm}{1}
+%\newcounter{counter_lma}\setcounter{counter_lma}{1}
+%\newcounter{counter_dft}\setcounter{counter_dft}{1}
+%\newcounter{counter_clm}\setcounter{counter_clm}{1}
+%\newcounter{counter_cly}\setcounter{counter_cly}{1}
+
+\newtheorem{theorem}{{\hskip 1.7em \bf 定理}}
+\newtheorem{lemma}[theorem]{\hskip 1.7em 引理}
+\newtheorem{proposition}[theorem]{Proposition}
+\newtheorem{claim}[theorem]{\hskip 1.7em 命题}
+\newtheorem{corollary}[theorem]{\hskip 1.7em 推论}
+\newtheorem{definition}[theorem]{\hskip 1.7em 定义}
+
+\renewcommand{\emph}[1]{\begin{kaishu} #1 \end{kaishu}}
+
+\newenvironment{solution}{{\noindent\hskip 2em \bf 解 \quad}}
+
+
+\renewenvironment{proof}{{\noindent\hskip 2em \bf 证明 \quad}}{\hfill$\qed$\par}
+\newenvironment{example}{{\par\vskip1em\noindent\hskip 2em \bf 例 \arabic{counter_exm}\quad}}{\addtocounter{counter_exm}{1}\par\vskip1em}
+
+\newenvironment{concept}[1]{{\bf #1\quad} \begin{kaishu}} {\end{kaishu}\par}
+
+\newcommand\E{\mathbb{E}}
+\begin{document}
+
+    \pagestyle{fancy}
+    \lhead{\kaishu 中国科学院大学}
+    \chead{}
+    \rhead{\kaishu 2017年秋季学期组合数学}
+
+    \begin{center}
+        {\LARGE \bf 组合数学第1讲}\\
+    \end{center}
+    \begin{kaishu}
+        授课时间: 2017.9.5\quad
+        授课教师: 孙晓明
+        \hfill 记录人: 王华强\quad 段江飞
+    \end{kaishu} \par
+
+    \section{计数原理}
+    \begin{concept}{加法原理}
+        设集合$S$被划分成两两不相交的部分$S_1,S_2,\ldots,S_m$。则$S$的对象数目可以通过确定它的每一部分的对象数目并如此相加而得到：
+        \[|S|=|S_1|+|S_2|+\cdots+|S_n|\]
+    \end{concept}
+    也可以这样理解：完成一件事情有$n$类方法，其中第$i$类方法（$i$是任意在$1$到$n$之间的整数）中包含$m_i$类方法。那么完成这件事情总的方法数就是$N=m_1+m_2+\cdots+m_n$。
+
+    \vskip1em
+    \begin{concept}{乘法原理}
+        令$S$是对象的有序对$(a, b)$的集合，其中第一个对象$a$来自大小为$p$的一个集合，而对于对象$a$的每个选择，对象$b$有$q$种选择。于是，$S$的大小为$p\times q$：
+         \[|S|=p\times q\]
+    \end{concept}
+
+    乘法原理的第二种实用形式是：\emph{如果第一项任务有$p$个结果，而不论第一项任务的结果如何，第二项任务都有$q$个结果,那么，这两项任务连续执行就有$p\times q$个结果。}
+
+    \begin{example}
+        \emph{一名学生要修两门课程。第一门课可以安排在上午3个小时中的任一小时，第二门课则可以安排在下午4 个小时的任一小时。该学生可能的课程安排数量是$3\times4=12$。}
+    \end{example}
+
+
+    \section{排列与组合}
+    \begin{definition}[排列]
+        在$n$个不同元素中选出$m$个进行排列，定义排列$P_{n,m}$为所有排列方法的总数，即：
+         \[P_{n,m}:=\frac{n!}{(n-m)!}=n^{\underline{m}}\]
+    \end{definition}
+
+    \begin{definition}[组合]
+        从$n$个不同的元素中取出$m$个元素，定义组合$\binom{n}{m}$为所有选取方法的总数，即：
+        \[{n \choose m}:=\frac{n!}{m!(n-m)!}=\frac{n^{\underline{m}}}{m!}\]
+    \end{definition}
+
+    实际上${n \choose m}$不只适用于$m,n$为整数且$m\leq n$的情况，还适用于$n,m$是实数或是$m \ge n$的情况。例如当$m > n$时，从$n$个元素中取出$m$个显然是不可能的，即${n \choose m}=0$；又例如当$n=-1$时这样计算可以得到：
+    \[{-1 \choose m}=\frac{(-1)(-2)\cdots(-m)}{m!}=(-1)^{m}\]
+    再例如当$n=-\frac{1}{2}$时可以得到：
+    \begin{align*}
+        {-\frac{1}{2} \choose n}&=\frac{(-\frac12)(-\frac32)\cdot(-\frac{2n-1}2)}{n!}\\
+        &=\frac{(-2)^{-n}(2n-1)!!}{n!}\\
+        &=\frac{(-2)^{-n}(2n-1)!!(2n)!!}{n!(2n)!!}\\
+        &=\frac{(-4)^{-n}(2n)!}{n!n!}\\
+        &=(-4)^{-n}\binom{2n}{n}
+    \end{align*}
+
+
+    \begin{theorem}[二项式定理] 对于任何$n\in R\in \mathbb{R}$，有：
+        \[(x+y)^{n}=\sum_{i=0}^{n}{n \choose i}x^{n-i}y^{i}\]
+    \end{theorem}
+
+    二项式定理最早由牛顿提出，又称牛顿二项式定理，它描述了二项式的幂的代数展开。根据该定理，可以将两个数之和的整数次幂诸如$(x + y)^n$展开为类似$ax^by^c$项之和。
+
+    令$y=1$可以得到$(1+x)^n$的展开式，这是一个十分常用的展开式：
+    $$(1+x)^{n}=\sum_{i=0}^{n}{n \choose i}x^{i}=\sum_{i\ge0}^{}{n \choose i}x^{i}$$
+
+    当$n=-1$时，利用泰勒展开式也可以将$(1+x)^{-1}$进行展开：
+    $$(1+x)^{-1}=1-x+x^{2}-x^{3}+\cdots=\sum_{i\ge0}^{}(-1)^{i}x^{i}=\sum_{i\ge0}^{}{-1 \choose i}x^{i}$$
+    注意到如果考虑组合数的推广，二项式定理依然从成立。实际上二项式定理可以推广到任意实数次幂，前面我们提到${n \choose m}$中的$n,m$可以推广到任意实数，二项式定理中的${n \choose i}$中的$n$也可以任取，二项式定理同样可以推广到任意实数次幂，即广义二项式定理：
+    \[(1+x)^a=\sum_{i\ge 0}{a\choose i}x^i\quad(|x|<1, a\in \mathbb{R})\]
+
+    应用二项式定理不仅能对二项加和的幂进行展开，还可以方便的求解列组合数相加问题：
+    \begin{example}
+        \emph{计算$\sum_{i\geq 0}\binom{n}{2i}=\binom{n}{0}+\binom{n}{2}+\binom{n}{4}+\cdots+\binom{n}{2\lfloor\frac{n}{2}\rfloor}$的闭形式。}
+    \end{example}
+
+    \begin{solution}
+        根据二项式定理，易知：
+        \[\sum_{i=0}^n\binom{n}{i}=2^n \tag{1}\]
+        且
+        \[\sum_{i=0}^n\binom{n}{i}(-1)^i=0 \tag{2}\]
+        将(1)式与(2)式相加得到：
+        \[\sum_{i\geq 0}\binom{n}{2i}=2^{n-1}\]
+        此外将(1)与(2)式相减还可得到一个相似的结论：
+        \[\sum_{i\geq 0}\binom{n}{2i+1}=2^{n-1}\]
+    \end{solution}
+
+    \begin{example}
+        \emph{计算$\sum_{i\ge 0}{n\choose 3i}=\binom{n}{0}+\binom{n}{3}+\binom{n}{6}+\cdots+\binom{n}{3\lfloor\frac{n}{3}\rfloor}$的闭形式。}
+    \end{example}
+
+    \begin{solution}
+        考虑$x^3=1$的三个根$1, \omega, \omega^2$，其中$\omega=\exp(\frac{2}{3}\pi i)$，应用二项式定理展开$(1+1)^n,(1+\omega)^n,(1+\omega^2)^n$得到：
+        \begin{align*}
+            (1+1)^n&={n\choose 0}1 +{n\choose 1}1+{n\choose 2}1+{n\choose 3}1+\cdots \tag{3}\\
+            (1+\omega)^n&={n\choose 0}1 +{n\choose 1}\omega+{n\choose 2}\omega^2+{n\choose 3}1+\cdots \tag{4}\\
+            (1+\omega^2)^n&={n\choose 0}1 +{n\choose 1}\omega^2+{n\choose 2}\omega+{n\choose 3}1+\cdots \tag{5}
+        \end{align*}
+        将式(3)、式(4)与式(5)相加得到：
+        \begin{align*}
+            &(1+1)^n+(1+\omega)^n+(1+\omega^2)^n\\
+            =&3\sum_{i\geq 0}{n\choose 3i}+(1+\omega+\omega^2)\sum_{i\geq 0}{n\choose 3i+1}+(1+\omega^2+\omega)\sum_{i\geq 0}{n\choose 3i+2}\\
+            =&3\sum_{i\geq 0}{n\choose 3i}
+        \end{align*}
+        求得原式的闭形式为$\frac{2^n+(1+\omega)^n+(1+\omega^2)^n}{3}$，这里求得的式子还可以继续化简，留给同学们课后练习。
+    \end{solution}
+
+    \begin{example}
+        \emph{计算$\sum_{i\ge0}^{}i{n \choose i}={n \choose 1}+2{n \choose 2} +\cdots+n{n \choose n}$的闭形式。}
+    \end{example}
+
+    \begin{solution}
+        将$(1+x)^{n}=\sum_{i\ge0}{n \choose i}x^{i}$两侧对$x$求导得到：
+        \[n(1+x)^{n-1}=\sum_{i\ge0}^{}i{n \choose i}x^{i-1}={n \choose 1}+2{n \choose 2}x+\cdots+n{n \choose n}x^{n-1}\]
+
+        令$x=1$得到
+        \[\sum_{i\ge0}^{}i{n \choose i}={n \choose 1}+2{n \choose 2}+\cdots+n{n \choose n}=n\cdot2^{n-1}\]
+    \end{solution}
+
+    \section{范德蒙恒等式（Vandermonde Formula）}
+    \begin{theorem}[范德蒙恒等式]
+        对于任意$n,m\in \mathbb{N}$，有：
+        \[\sum_i {n \choose i}{m \choose k-i}={n+m \choose k}\]
+    \end{theorem}
+
+    \begin{proof}
+        对$(1+x)^{n}$，$(1+x)^{m}$，$(1+x)^{m+n}$分别利用二项式定理得到：
+        \begin{align*}
+            (1+x)^{n}(1+x)^{m}&=\left(\sum_{i\ge0}^{}{n \choose i}x^{i}\right)\cdot\left(\sum_{j\ge0}^{}{m \choose j}x^{j}\right) \tag{6}\\
+            (1+x)^{m+n}&=\sum_{k\ge0}^{}{n+m \choose k}x^{k} \tag{7}
+        \end{align*}
+        显然有(6)$\equiv$(7)，分别求出(6)式(7)式中$x^k$的系数：
+        \[\sum_{i=0}^{k}{n \choose i}{m \choose k-i}={n+m \choose k}\]
+        原定理得证。
+    \end{proof}
+
+    \begin{example}
+        \emph{计算$\sum_{k\geq 0}\binom{n}{k}^2={n \choose 0}^{2}+{n \choose 1}^{2}+\cdots+{n \choose n}^{2}$的闭形式。}
+    \end{example}
+
+    \begin{solution}
+        将$\binom{n}{k}^2$替换为$\binom{n}{k}\cdot\binom{n}{n-k}$，并应用范德蒙恒等式可得原式的闭形式为$\binom{2n}{n}$，推导如下：
+        \begin{align*}
+            \sum_{k\geq 0}\binom{n}{k}^2&={n \choose 0}^{2}+{n \choose 1}^{2}+\cdots+{n \choose n}^{2}\\
+            &={n \choose 0}\cdot\binom{n}{n}+{n \choose 1}\cdot\binom{n}{n-1}+\cdots+{n \choose n}\cdot\binom{n}{0}\\
+            &={2n \choose n}\\
+        \end{align*}
+    \end{solution}
+
+    \section{朱世杰恒等式}
+    \begin{theorem}[朱世杰恒等式]
+        对于任意$n,m,k\in \mathbb{N}$且$n\geq m$，有：
+        \[\sum_{i=m}^n \binom ik = \binom {n+1}{k+1} - \binom {m}{k+1} \]
+    \end{theorem}
+    考虑在杨辉三角中“斜线”上的组合数，易知如上关系成立，下面给出严格证明；
+
+    \begin{proof}
+        注意到组合数满足$\binom nk = \binom {n-1}k+\binom{n-1}{k-1}$，因而易知当$n=m$时恒等式成立。归纳假设当$n=m+t$时（其中$t\geq 0$）恒等式成立，那么有：
+        \begin{align*}
+            \sum_{i=m}^{n+t+1} \binom ik &= \sum_{i=m}^{n+t} \binom ik + \binom {n+t+1}k\\
+            &= \binom {n+t+1}{k+1} - \binom {m}{k+1} + \binom {n+t+1}k\\
+            &= \binom {n+t+2}{k+1} - \binom {m}{k+1}
+        \end{align*}
+        归纳成立，原恒等式得证。
+    \end{proof}
+
+    \begin{example}
+        \emph{计算$\sum_{k=1}^n k^3=1^3+2^3+3^3+\cdots+n^3$的闭形式。}
+    \end{example}
+    \begin{solution}
+        $k^3$的可以表示为：
+        \[k^3=6\binom k3 + 6\binom k2 + \binom k1\]
+        应用朱世杰恒等式对这三项分别求和，有：
+        \begin{align*}
+            \sum_{k=1}^n k^3 &= 6\sum_{k=1}^n \binom k3 + 6\sum_{k=1}^n \binom k2 + \sum_{k=1}^n \binom k1\\
+            &= 6\binom{n+1}{4}-6\binom{1}{4}+6\binom{n+1}{3}-6\binom{1}{3}+\binom{n+1}{2}-6\binom{1}{2}\\
+            &= \frac{n^2(n+1)^2}{4}
+        \end{align*}
+    \end{solution}
+
+    \section{组合数的多项式性质}
+    例6中的可以将$x^3$分解为若干组合数的线性组合，那么对于任意的自然数$k$，$x^k$是否可以写成组合数的线性组合的形式?
+
+    \begin{theorem}
+        对于任意的$n\in \mathbb{N}$，存在唯一一组系数$a_1,a_2,\ldots,a_n$其中$a_n\not=0$，满足：
+        \[x^n=a_n{x\choose n}+a_{n-1}{x\choose n-1}+\cdots+a_1{x\choose 1}\]
+    \end{theorem}
+
+    \begin{proof}
+    系数唯一当且仅当${x\choose n},{x\choose n-1},\ldots,{x\choose 1}$线性无关。反证假设${x\choose n},{x\choose n-1},\ldots,{x\choose 1}$线性相关，则存在一组不全为零的系数$b_n, b_{n-1}, \ldots, b_1$使得：
+    \[b_n{x\choose n}+b_{n-1}{x\choose n-1}+\cdots+b_2{x\choose 2}+b_1{x\choose 1}=0\]
+    令$x=1$，带入得到$b_1=0$；再令$x=2$，带入得到$b_2=0$，依次类推，可知$b_1=b_2=\cdots=b_n=0$，与不全为零的条件矛盾，系数的唯一性得证。
+
+    接下来用数学归纳法证明$x^n$可以由${x\choose n},{x\choose n-1},\ldots,{x\choose 1}$线性表出。当$n=1$时$x={x\choose 1}$，原定理成立；归纳假设$n\leq t-1$时$x^{t-1}$可以由${x\choose t-1},{x\choose t-2},\ldots,{x\choose 1}$线性表出，考虑$\binom nt$的多项式展开：
+    \[{x\choose t}=\frac{x(x-1)\cdots(x-t+1)}{t!}=\frac{x^t}{t!}+d_{t-1}x^{t-1}+d_{t-2}x^{t-2}+\cdots+d_{1}x\]
+    其中$d_1,d_2,\ldots,d_{t-1}$
+    所以，$x^n$可以表示为某组系数（与第一类斯特林数有关，之后的课程中会详细介绍），那么有：
+    \[x^t=t!{x\choose n}-t!d_{t-1}x^{t-1}-t!d_{t-2}x^{t-2}-\cdots-t!d_{1}x\]
+    根据假设，$x^{t-1}, x^{t-2}, \ldots, x$都可以用${x\choose t-1},{x\choose t-2},\ldots,{x\choose 1}$线性表出，所以$x^t$可用${x\choose t},{x\choose t-1},\ldots,{x\choose 1}$线性表出，
+    且${x\choose t}$的系数非零，归纳成立，原定理得证。
+    \end{proof}
+
+    \vskip1em
+    我们也可以使用多项式带余除法，$x^n$除以$\binom xn$，商作为系数，将余数再除以$\binom x{n-1}$，依次类推，可求出所有系数。
+
+    \newpage
+    \section{选做题一：财产分割}
+    一个富翁有两个儿子，富翁希望能公平的将其所有资产分给两个儿子，问存不存在一种分配使得其所有亲戚认为分配是公平的？若存在，请给出。
+
+    问题的数学描述等价为，已知$f_1$,$f_2$,\dots,$f_n$为$n$个概率密度函数，即对于所有的$1\le i\le n$满足：
+    \[\int_0^1 f_i(x) {\rm d}x=1\]
+    且
+    \[\forall x\in [0,1]: f_i(x) \ge 0\]
+    当$n = 2$时，是否存在一个$[0, 1]$的划分$(A, B)$，使得$A\bigcup B= [0, 1]$且$A\bigcap B =\emptyset$，对$\forall 1\le i\le n$满足：
+    \[\int_A f_i(x) {\rm d}x=\frac 12\]
+\end{document}
+

@@ -1,0 +1,276 @@
+﻿\documentclass[11pt]{article}
+
+\usepackage[a4paper]{geometry}
+\geometry{left=2.0cm,right=2.0cm,top=2.5cm,bottom=2.5cm}
+
+\usepackage{ctex}
+\usepackage{amsmath,amsfonts,graphicx,amssymb,bm,amsthm,mathrsfs}
+\usepackage{algorithm,algorithmicx}
+\usepackage[noend]{algpseudocode}
+\usepackage{fancyhdr}
+\usepackage{hyperref}
+
+\newcounter{counter_exm}\setcounter{counter_exm}{1}
+%\newcounter{counter_thm}\setcounter{counter_thm}{1}
+%\newcounter{counter_lma}\setcounter{counter_lma}{1}
+%\newcounter{counter_dft}\setcounter{counter_dft}{1}
+%\newcounter{counter_clm}\setcounter{counter_clm}{1}
+%\newcounter{counter_cly}\setcounter{counter_cly}{1}
+
+\newtheorem{theorem}{{\hskip 1.7em \bf 定理}}
+\newtheorem{lemma}[theorem]{\hskip 1.7em 引理}
+\newtheorem{proposition}[theorem]{Proposition}
+\newtheorem{claim}[theorem]{\hskip 1.7em 命题}
+\newtheorem{corollary}[theorem]{\hskip 1.7em 推论}
+\newtheorem{definition}[theorem]{\hskip 1.7em 定义}
+
+\renewcommand{\emph}[1]{\begin{kaishu} #1 \end{kaishu}}
+
+\newenvironment{solution}{{\noindent\hskip 2em \bf 解 \quad}}
+
+\renewenvironment{proof}{{\noindent\hskip 2em \bf 证明 \quad}}{\hfill$\qed$\par}
+\newenvironment{example}{{\noindent\hskip 2em \bf 例 \arabic{counter_exm}\quad}}{\addtocounter{counter_exm}{1}\par}
+
+\newenvironment{concept}[1]{{\bf #1\quad} \begin{kaishu}} {\end{kaishu}\par}
+
+\newcommand\E{\mathbb{E}}
+
+\begin{document}
+
+    \pagestyle{fancy}
+    \lhead{\kaishu 中国科学院大学}
+    \chead{}
+    \rhead{\kaishu 2017年秋季学期组合数学}
+
+    \begin{center}
+        {\LARGE \bf 组合数学第三讲}\\
+    \end{center}
+        \begin{kaishu}
+            授课时间: 2017年9月19日\quad
+            授课教师: 孙晓明
+            \hfill 记录人: 陈子珩
+        \end{kaishu}
+
+
+    \section{思考题}
+
+    \heiti 富翁的财产分配问题
+
+    \songti 一个富翁有两个儿子，富翁希望能公平的将其所有资产分给两个儿子，问存不存在一种分配使得其所有亲戚认为分配是公平的？若存在，请给出。
+
+
+    \heiti 问题的数学表述如下：
+
+    \songti 设$f_1, f_2, \dots , f_n$为$n$个概率密度函数，即对于所有的$1\le i\le n$满足
+        \[
+            \forall x \in [0,1]: f_i (x)\ge 0
+        \]
+        且
+        \[
+            \int_0^1 f_i (x)dx = 1
+        \]
+        问是否存在对$[0,1]$区间的划分$(A,B)$，使得$A\cup B=[0,1]$，$A\cap B=\phi$，且对于所有的$1\le i\le n$满足
+        \[
+            \int_A f_i (x)dx = \frac{1}{2}
+        \]
+
+    \begin{solution} 对于$n=2$的情况，上节课中我们利用连续函数的介值定理加以证明。下面给出应用Borsuk-Ulam定理，对一般$n$的证明\footnote{本解法由李奉治同学查阅文献给出}。首先作如下分析。
+
+        {\bf 分析} \hskip0.5em 考虑一种极端情况，对于所有的$1\le i\le n, x_i\in (0,1)$为$i$个不同的数$(x_i<x_{i+1})$，$f_i(x)=\delta (x-x_i)$，其中$\delta$为Dirac-$\delta$函数
+        \footnote{$\delta$即著名的Dirac-$\delta$函数，其满足条件(1)$\forall x\ne 0, \delta(x)=0$，(2)$\int_{-\infty}^\infty \delta (x)dx=1$}，则我们自然得到了$[0,1]$的$n$个分点，在这种情况下显然至少需要将$[0,1]$分为$n+1$段才能满足题目的要求（即将这$n+1$段交替地放入$A$和$B$）。\ 对于一般情形，也可以考虑尝试将$[0,1]$分为$n+1$段，并将这$n+1$段分配给集合$A$和$B$，此时对于$i=1,\ldots,n$，$\int_A f_i(x)dx$就简化为这$n+1$个长度和$(A,B)$分配方式的函数，事实上只需考虑这个函数的性质即可。
+
+        {\bf 详细过程} \hskip0.5em 将$[0,1]$分为$n+1$个连续区间$D_0, \dots , D_n$，再将这$n+1$个区间分属于两个不同的集合$A, B$，对于每种方案，我们可以用一个单位模实向量$\vec x=(x_0,\ldots,x_n)$ 来描述。其中$x_i^2$表示$D_i$区间的长度，$x_i$的符号表示$D_i$区间的分配归属（区间$D_i$分属$A$当且仅当$x_i>0$）。因为有$x_0^2+\cdots+x_n^2=1$，每个单位模实向量均可对应一种合法的方案$A, B$ 分割方案。对于$i=1,\ldots,n$，定义$F_i(\vec x)$为估价函数$f_i$在$\vec x$所对应的分割方案的$A$区间内的积分，即
+        \[
+            F_i(\vec x):= \sum_{k=0}^n[x_k>0] \int_{D_k}f_i(y)dy
+        \]
+        又定义
+        \[
+            F(\vec x)=(F_1(\vec x),\ldots,F_n(\vec x))
+        \]
+
+        因为$n+1$维单位模实向量与$n$维球面$S^n$上的点一一对应，且$F$定义在全体单位模向量集合上，我们说$F$是$S^n$到$\mathbb{R}^n$的映射。可以合理的假设问题中的概率密度函数是有界的，考虑$F$的定义，其显然是连续的，根据Borsuk-Ulam定理，存在$\vec x$，满足$F(\vec x)=F(-\vec x)$。已知对于$i=1,\ldots,n$
+        \[
+            F_i(-\vec x)=\sum_{k=0}^n[x_k<0] \int_{D_k}f_i(y)dy=\sum_{k=0}^n(1-[x_k>0])\int_{D_k}f_i(y)dy=1-F_i(\vec x)
+        \]
+        那么$F(-\vec x)=(1-F_1(\vec x), \dots , 1-F_n(\vec x))$。即存在的$\vec x$满足
+        \begin{align*}
+            &F(\vec x) = F(-\vec x)\\
+            \Leftrightarrow &\forall i\in [n]: F_i(\vec x) = F_i(-\vec x) = 1 - F_i(\vec x)\\
+            \Leftrightarrow &\forall i\in [n]: F_i(\vec x) = 1/2
+        \end{align*}
+        又已知单位模实向量对应一种合法的分割方案，那么$\vec x$对应的方案，可令每个估价函数在$A$上的积分为$1/2$，满足题目要求。\hfill$\qed$
+
+        证明中用到了Borsuk-Ulam定理，具体如下。
+        \begin{theorem}[Borsuk-Ulam定理]
+            函数$f$是$n$维球面$S^n$到$\mathbb{R}^n$的连续函数，那么必然存在$x\in S^n$，满足：
+            \[
+                f(x)=f(-x)
+            \]
+        \end{theorem}
+    \end{solution}
+    \vskip2em
+
+    \heiti 离散化的问题
+
+    \songti 设有一串有限长度的珠子，珠子共有$n$种颜色，每种颜色的珠子都有偶数个。求问至少切几刀可以将珠子分为两部分，其中相同颜色珠子的个数都相等。类似于连续情形的分析可知这个最小值$\ge n$，但是之后的证明过程则无法继续照搬，需要探索新的证明途径。
+
+    事实上这里的最小值已被证明是$n$（留作思考题），但是在切割方法的探寻方面，至今没有找到比暴力枚举更好的算法。
+
+    \section{圆排列与可重排列}
+
+    \subsection{圆排列}
+
+    将$n$个不同的小球排成一圈，即先将$n$个小球排成一排，再首尾相接为一个圈，注意到依据第一个小球的不同，共有$n$个排列对应同一个圆排列，故不同的圆排列的种类数为
+    \[
+        \frac{n!}{n}=(n-1)!
+    \]
+
+    \subsection{可重排列与多项式定理}
+
+    设有$n$个小球，小球分为$m$类，其中第$i$类小球有$n_i$个$(1\le i\le m, n_1+n_2+\dots +n_m=n)$。将这$n$个小球排成一排，即先将这$n$个小球看作两两不同的排成一排，而注意到对于第$i$类小球，这样的排列产生了$n_i!$次重复，故不同的可重排列的种类数为
+    \[
+        {n\choose {n_1, n_2,\dots ,n_m}}=\frac{n!}{n_1!n_2!\cdots n_m!}
+    \]
+
+    类似于二项式定理，利用上式可以导出如下的多项式定理
+    \[
+        (x_1+x_2+\dots +x_m)^n=\sum_{\substack{n_1+n_2+\dots +n_m=n \\ n_1, n_2,\dots ,n_m>0}}{n \choose {n_1, n_2,\dots ,n_m}}x_1^{n_1}x_2^{n_2}\cdots x_m^{n_m}
+    \]
+
+    证明是简易的，考虑从$n$组$x_1, x_2,\dots ,x_m$中每组取一个元素，恰好取到$n_i$个$x_i$的可能取法数$(1\le i\le m)$即可。
+
+    \section{球-盒模型计数问题}
+
+    将$n$个球放在$m$个盒子里可能的方法数，依据是否把球或者盒子视作相同的进行分类，有以下四种问题。
+
+    \subsection{球不同，盒子不同}
+
+    注意到每个球都有$m$种可能的放法，而共有$n$个球，知共有$m^n$种放法。
+
+    \subsection{球相同，盒子不同}
+
+    此时只需要研究$m$个盒子中球的数目，即讨论如下方程解的个数
+
+    \[
+        x_1+x_2+\dots +x_m=n, x_i\in \mathbb{N}
+    \]
+
+    令$y_i=x_i+1, 1\le i\le m$，方程化为
+
+    \[
+        y_1+y_2+\dots +y_m=n+m, y_i\in \mathbb{Z}^{+}
+    \]
+
+    为得到以上方程正整数解的个数，考虑将$n+m$个球放成一排，形成$n+m-1$个空隙，将$m-1$个隔板放在这$n+m-1$个空隙中，每个空隙最多放一个隔板，因此共有$n+m-1 \choose m-1$种放法。
+
+    \subsection{球不同，盒子相同}
+
+    此时若不允许空盒存在，总共的放法数即第二类Stirling数$S_2(n, m)$，本题给出了它的一种递归定义如下。
+
+    考虑最后一个球，有两种可能：(1)前$n-1$个球被放进了$m-1$个盒子，则这个球只能被放进余下一个盒子；(2)前$n-1$个球被放进了$m$个盒子，则这个球可以随意放进某个盒子。由此可得递推关系式
+    \[
+        S_2(n, m)=S_2(n-1, m-1)+mS_2(n-1, m)
+    \]
+
+    若允许空盒，则显然放法数为$S_2(n, 1)+S_2(n, 2)+\dots +S_2(n, m)$。
+
+    \subsection{球相同，盒子相同}
+
+    此时需要利用概率论中的母函数方法来解决问题，这里只给出结果。
+
+    若允许有空盒，取母函数
+    \[
+        G(x)=\frac{1}{(1-x)(1-x^2)\cdots (1-x^n)}
+    \]
+    则放法数为$G(x)$中$x^n$的系数。
+
+    若不允许有空盒，则放法数为$G(x)$中$x^{n-m}$的系数，注意这里若我们将$x^0,x,x^2, \dots, x^{n-1}$的系数相加即得到$n$的\emph{划分数}({\it partition number})。
+
+    \section{集族的极值问题}
+
+    关于集族的计数问题往往针对集族中集合个数的最大值或最小值提出，下设$\mathcal{F}$为一个集族。
+
+    \subsection{反链(anti-chain)}
+
+    \begin{definition}[反链]
+        若$\forall A, B\in \mathcal{F}$，有$A\subseteq B\Rightarrow A=B$，则称$\mathcal{F}$是一个反链(anti-chain)或Sperner族。
+    \end{definition}
+
+    定义表明反链中任意两个集合互不包含。记$[n]=\{1, 2,\dots, n\}$，现设$\mathcal{F}\subseteq 2^{[n]}$是一个反链，求集族$\mathcal{F}$中集合个数的最大值。
+
+    一个基本的想法是，若$\mathcal{F}$中的集合元素个数都相等，那自然满足$\mathcal{F}$是一个反链。若$\mathcal{F}$是所有$k$元集组成的集族，则$|\mathcal{F}|={n\choose k}$。 由组合数的大小关系，自然有$\max |\mathcal{F}|\ge {n\choose {\lfloor\frac{n}{2}\rfloor}}$。
+
+    如下的定理表明事实上$\max |\mathcal{F}|= {n\choose {\lfloor\frac{n}{2}\rfloor}}$。
+    \begin{theorem}[Sperner定理]
+        设$\mathcal{F}\subseteq 2^{[n]}$是一个反链，则$|\mathcal{F}|\le {n\choose {\lfloor\frac{n}{2}\rfloor}}$。
+    \end{theorem}
+
+    Sperner本人是利用调整法来证明这个定理的，但是这个证明的技术细节相当复杂，Lubell、Yamamoto和Meshalkin分别在1966年、1954年和1963年独立地给出了更简洁的证明。
+
+    \begin{theorem}[Lubell-Yamamoto-Meshalkin不等式]
+        $\mathcal{F}\subseteq 2^{[n]}$是定义在其上的某个反链，$a_k$表示$\mathcal{F}$中元素个数为$k$的集合个数，那么
+        \[
+            \sum_{k=0}^n\frac{a_k}{\binom{n}{k}}\leq 1
+        \]
+    \end{theorem}
+    \begin{proof}
+        不妨令$n$元集合$U=[n]$，设$\pi \in S_n$是一个置换，$A=\{\pi(1), \pi(2),\dots , \pi(k)\}\in \mathcal{F}$。
+
+        若$B=\{\pi(1), \pi(2),\dots , \pi(m)\} \in \mathcal{F}$，（不妨设$m\leq k$）则有$B\subseteq A$，由反链的定义知$A=B$。 即对于任意置换，其前缀至多对应一个$\mathcal{F}$中的元素。另一方面，若给定一个集合$A\in \mathcal{F}$，显然有$|A|!(n-|A|)!$个置换与之对应。注意到$|S_n|=n!$有
+        \[
+            \sum_{A\in \mathcal{F}}|A|!(n-|A|)!\le n!
+        \]
+        从而有
+        \[
+            \sum_{k=0}^n\frac{a_k}{\binom{n}{k}} = \sum_{A\in \mathcal{F}}\frac{1}{{n\choose |A|}} \leq 1
+        \]
+        \qedhere
+    \end{proof}
+
+    根据LYM不等式易推知$|\mathcal{F}|=\sum_{k=0}^n a_k\leq \binom{n}{\lfloor n/2\rfloor}$，Sperner定理得证。
+
+    \subsection{相交集族(intersecting family)}
+    \begin{definition}[相交集族]
+        若$\forall A\ne B\in \mathcal{F}$，有$A\cap B\ne \phi$，则称$\mathcal{F}$是一个相交集族(intersecting family)。
+    \end{definition}
+
+    定义表明相交集族中任意两个集合都相交。记$[n]=\{1, 2,\dots , n\}$，现设$\mathcal{F}\subseteq 2^{[n]}$是一个相交集族，求集族$\mathcal{F}$的最大元素个数。
+
+    考虑包含元素$1$的所有集合构成的集族$\mathcal{F}$，显然$\forall A,B\in \mathcal{F}$, $1\in A\cap B$即任意两集合交集非空，$\mathcal{F}$是一个相交集族且$|\mathcal{F}|=2^{n-1}$，则$\max |\mathcal{F}|\ge 2^{n-1}$。 而另一方面，注意到集合$A$和$A^C$不能同时在$\mathcal{F}$中，可知$\max |\mathcal{F}|\leq|2^{[n]}|/2= 2^{n-1}$。因此有$\max |\mathcal{F}|= 2^{n-1}$。
+
+    这个问题是简单的，下面我们增加限制条件，设$\mathcal{F}\subseteq 2^{[n]}$是一个相交集族，且$\forall A\in \mathcal{F}, |A|=k$，其中$1\le k\le n$，求集族$\mathcal{F}$中集合个数的最大值。
+
+    $k>\frac{n}{2}$的情况是平凡的，由抽屉原理，显然任取$2^{[n]}$中的两个$k$元子集，它们必然相交，因而有$\max |\mathcal{F}|= {n\choose k}$。
+    而对于$k\le \frac{n}{2}$的情形，考虑包含$1$的所有$k$元集合构成的集族$\mathcal{F}$，显然$\mathcal{F}$是一个相交集族且$|\mathcal{F}|={{n-1}\choose {k-1}}$，因而$\max |\mathcal{F}|\ge {{n-1}\choose {k-1}}$。
+
+    如下的定理表明事实上此时$\max |\mathcal{F}|= {{n-1}\choose {k-1}}$。
+
+    \begin{theorem}[Erdos-Ko-Rado定理]
+        设$\mathcal{F}\subseteq 2^{[n]}$是一个相交集族，且$\forall A\in \mathcal{F}, |A|=k$，则若$k>\frac{n}{2}$，则$\max |\mathcal{F}|= {n\choose k}$；若$k\le \frac{n}{2}$，则$\max |\mathcal{F}|= {{n-1}\choose {k-1}}$。
+    \end{theorem}
+
+    这个定理最初由Erdos、Ko和Rado合作证明，但是证明过程较为繁琐，以下叙述的是匈牙利人Katona在$1972$年给出的一种简单的证明。
+
+    \begin{proof}{(Katona, 1972)}
+        只需证明$k\le \frac{n}{2}$时，$\max |\mathcal{F}|\le {{n-1}\choose {k-1}}$即可。
+
+        考虑序号为$1,\ldots,n$的$n$个人坐在一个圆桌旁，用集合$A\in \mathcal{F}$来限制就坐方式：序号在$A$中的$k$（$k$为集合$A$的元素个数）个人必须坐在一起。对于每个固定的$A$，共有$k!(n-k)!$种坐法。而每种具体的就坐方案最多满足$\mathcal{F}$中$m$个集合的就坐限制。注意到$n$元圆排列的总数为$(n-1)!$，有
+        \[
+            \sum_{A\in \mathcal{F}}k!(n-k)!\le m(n-1)!
+        \]
+        事实上，可以证明$m\le k$（留作练习），因而有
+        \[
+            \sum_{A\in \mathcal{F}}k!(n-k)!\le k(n-1)!
+        \]
+        从而
+        \[
+            |\mathcal{F}|\le {{n-1}\choose {k-1}}
+        \]
+    \end{proof}
+
+\end{document}
+
+
+
+
+

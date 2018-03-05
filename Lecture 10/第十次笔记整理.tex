@@ -1,0 +1,270 @@
+﻿\documentclass[11pt]{article}
+
+\usepackage[a4paper]{geometry}
+\geometry{left=2.0cm,right=2.0cm,top=2.5cm,bottom=2.5cm}
+
+\usepackage{ctex}
+\usepackage{amsmath,amsfonts,graphicx,amssymb,bm,amsthm}
+\usepackage{algorithm,algorithmicx}
+\usepackage[noend]{algpseudocode}
+\usepackage{fancyhdr}
+\usepackage{hyperref}
+
+\newcounter{counter_exm}\setcounter{counter_exm}{1}
+%\newcounter{counter_thm}\setcounter{counter_thm}{1}
+%\newcounter{counter_lma}\setcounter{counter_lma}{1}
+%\newcounter{counter_dft}\setcounter{counter_dft}{1}
+%\newcounter{counter_clm}\setcounter{counter_clm}{1}
+%\newcounter{counter_cly}\setcounter{counter_cly}{1}
+
+\newtheorem{theorem}{{\hskip 1.7em \bf 定理}}
+\newtheorem{lemma}[theorem]{\hskip 1.7em 引理}
+\newtheorem{proposition}[theorem]{Proposition}
+\newtheorem{claim}[theorem]{\hskip 1.7em 命题}
+\newtheorem{corollary}[theorem]{\hskip 1.7em 推论}
+\newtheorem{definition}[theorem]{\hskip 1.7em 定义}
+
+\renewcommand{\emph}[1]{\begin{kaishu}#1\end{kaishu}}
+
+\newenvironment{solution}{{\noindent\hskip 2em \bf 解 \quad}}
+
+
+\renewenvironment{proof}{{\noindent\hskip 2em \bf 证明 \quad}}{\hfill$\qed$\par}
+\newenvironment{example}{{\noindent\hskip 2em \bf 例 \arabic{counter_exm}\quad}}{\addtocounter{counter_exm}{1}\par}
+
+\newenvironment{concept}[1]{{\bf #1\quad} \begin{kaishu}} {\end{kaishu}\par}
+
+\newcommand\E{\mathbb{E}}
+
+\begin{document}
+
+    \pagestyle{fancy}
+    \lhead{\kaishu 中国科学院大学}
+    \chead{}
+    \rhead{\kaishu 2017年秋季学期组合数学}
+
+    \begin{center}
+        {\LARGE \bf 组合数学第十讲}\\
+    \end{center}
+        \begin{kaishu}
+            授课时间: 2017年11月21日\quad
+            授课教师: 孙晓明
+            \hfill 记录人: 姜茜\quad 王语
+        \end{kaishu}
+
+    \section{思考题：证明斯特林数为单峰序列}
+    根据李奉治同学给出的解答，现将此整理至笔记中，供同学们学习参考。
+
+    求证：$S_1(n,k)$与$S_2(n,k)$是单峰数列。即对于任何自然数$n \leq 3$，存在自然数$t_1,t_2 \leq n$满足：
+    \begin{align*}
+        S_1(n,0) \leq \cdots \leq S_1(n,t_1-1)<S_1(n,t_1)>S_1(n,t_1+1) \geq \cdots \geq S_1(n,n)\\
+        S_2(n,0) \leq \cdots \leq S_2(n,t_2-1)<S_2(n,t_2)>S_2(n,t_2+1) \geq \cdots \geq S_2(n,n)\\
+    \end{align*}
+    \begin{definition}[对数凹性]
+        正数数列$a_0,a_1,a_2,\cdots,a_n$具有对数凹性，当且仅当对于任意正整数$1\leq k\leq n-1$，满足$a^{2}_k \geq a_{k-1}a_{k+1}$。
+    \end{definition}
+
+    \begin{lemma}
+        具有对数凹性的数列是单峰数列。
+    \end{lemma}
+    \begin{proof}
+        对于数列$a_0,a_1,a_2,\cdots,a_n$，若其满足对数凹性，则满足$a^{2}_k \geq a_{k-1}a_{k+1}$，故$\frac{a_{k+1}}{a_{k}} \leq \frac{a_{k}}{a_{k-1}}$。由此可得出，若$a_{k} \leq a_{k-1}$，则$a_{k+1} \leq a_{k}$。因此数列$\{ a_n \}$会递增直至满足$a_{t} \leq a_{t-1}(t \geq 1)$，满足单峰数列条件。
+    \end{proof}
+
+    \begin{lemma}
+        若一个正数数列对应的生成函数只有负实根，则这个数列满足对数凹性。
+    \end{lemma}
+    \begin{proof}
+        对于正数数列$a_0,a_1,a_2,\cdots,a_n$，其生成函数为$P_n(x)=\sum^{n}_{k=0}a_{k}x^{k}$。使用数学归纳法证明。当$n=2$时，$P(x)=a_0+a_1x+a_2x^2$，由于系数均为正数，易证其无非负实根。我们仅需证明其根均为实根时，数列满足对数凹性；又根据判别公式，方程的根均为实根，需要满足$\Delta = b^2-4ac = a_1^2-4a_0a_2 \geq 0$，移项可得$a_1^2 \geq 4a_0a_2 \geq a_0a_2$，这说明数列满足对数凹性。
+
+        归纳假设当$n=t-1$时原命题成立，即：若$P(x)=\sum^{t-1}_{k=0}a_{k}x^{k}$只有负实根，则正数数列$\{a_k\}_{k=0}^{t-1}$满足对数凹性。当$n=t$时，若长度为$t+1$的正数数列$\{a_k\}_{k=0}^t$的生成函数$P(x)=\sum^{t}_{k=0}a_{k}x^{k}$只有负实根，那么其必然可以表示为$P(x)=(x+c)Q(x)$，其中$c>0$且$Q(x)=\sum^{t-1}_{k=0}b_{k}x^{k}$，易知数列$\{a_k\}_{k=0}^t$可以表示为：
+        \[
+            a_k=\left\{\begin{array}{cl}
+                cb_0 &\textrm{if $k=0$;}\\
+                b_{t-1} &\textrm{if $k=t$;}\\
+                b_{k-1}+cb_k &\textrm{otherwise.}
+            \end{array}\right.
+        \]
+        根据假设$Q(x)$只有负实根，且根据$n=t-1$时的假设，有$b_k^2 \geq b_{k-1}b_{k+1}$。那么当$2 \leq k \leq n-2$时：
+        \begin{gather*}
+            b_k^2b_{k-1} \geq b_{k+1}b_{k-1}^2 \geq b_{k+1}b_kb_{k-2}\\
+            b_kb_{k-1} \geq b_{k+1}b_{k-2}
+        \end{gather*}
+        即可得到：
+        \begin{align*}
+            a_k^2-a_{k+1}a_{k-1}&=(b_{k-1}+cb_k)^2-(b_k+cb_{k+1})(b_{k-2}+cb_{k-1})\\
+                &=(b_{k-1}^2-b_kb_{k-2})+c(b_{k-1}b_k-b_{k+1}b_{k-2})+c^2(b_k^2-b_{k+1}b_{k-1})\\
+                &\geq 0
+        \end{align*}
+        当$k=1$时：
+        \begin{align*}
+            a_1^2-a_2a_0&=(b_0+cb_1)^2-(b_1+cb_2)cb_0\\
+                &=b_0^2+cb_0b_1+c^2b_1^2-c^2b_0b_2\\
+                &\geq b_0^2+cb_0b_1+c^2b_0b_2-c^2b_0b_2\\
+                &\geq 0
+        \end{align*}
+        当$k=n-1$时：
+        \begin{align*}
+            a_{n-1}^2-a_na_{n-2}&=(b_{n-2}+cb_{n-1})^2-b_{n-1}(b_{n-3}+cb_{n-2})\\
+                &=b_{n-2}^2+cb_{n-1}b_{n-2}+c^2b_{n-1}^2-b_{n-1}b_{n-3}\\
+                &\geq b_{n-1}b_{n-3}+cb_{n-1}b_{n-2}+c^2b_{n-1}^2-b_{n-1}b_{n-3}\\
+                &\geq 0
+        \end{align*}
+        综上可得，$a_k^2 \geq a_{k+1}a_{k-1}$，归纳成立，引理得证。
+    \end{proof}
+
+    第一类斯特林数的母函数为：
+    \[
+        \sum_{k=1}^{n}S_1(n,k)x^k=x(x+1)(x+2)\cdots(x+n-1)
+    \]
+    即第一类斯特林数的生成函数有根$0,-1,-2,\cdots,-(n-1)$。为消除零根，可不考虑$S_1(n,0)$，等式左右两边同除$x$，左侧相当于系数平移，右侧去除了零根。这时，根据上述引理可得，第一类斯特林数的数列为单峰数列。
+
+    第二类斯特林数的有如下递推：
+    \[
+        S_2(n,k)=S_2(n-1,k-1)+kS_2(n-1,k)\qquad\forall1<k<n
+    \]
+    使用数学归纳法，证明第二类斯特林数的生成函数只有零根和负实根，然后用和处理第一类斯特林数问题相同的方法去除零根，证明最终结果。
+
+    记$P_n(x)=\sum_{k=0}^{n}S_2(n,k)x^k$。由于$S_2(n,0)=0,\forall n>0$，因此$0$一定为$P_n(x)$的一个根。当$n=1$时，$P_1(x)=x$只有一个零点$x=0$；当$n=2$时，$p_2(x)=x+x^2$有两个零点$x_1=0$和$x_2=-1$；当$n>2$时，根据递归式，有：
+    \begin{align*}
+        P_n(x)&=\sum_{k=1}^nS(n,k)x^k\\
+            &=\sum_{k=1}^nS(n-1,k-1)x^k+\sum_{k=1}^nkS(n-1,k)x^k\\
+            &=xP_{n-1}(x)+x\frac{dP_{n-1}(x)}{dx}
+    \end{align*}
+    令$Q_n(x)=P_n(x)e^x$,易知$P_n(x)=0$和$Q_n(x)=0$有相同的根.将上述等式左右同乘$e^x$可以得到
+    \[
+        Q_n(x)=x\frac{dQ_{n-1}(x)}{dx}
+    \]
+    通过递推条件，已知$Q_{n-1}(x)$有零根和$n-2$个负实根，且易推出$${\lim_{x \to -\infty}Q_{n-1}(x)=0}$$
+    根据罗尔中值定理，上述$n$个点间存在$n-1$个导数为$0$的点，这些点都为负实数。再加上零根，正好构成$Q_n(x)$的$n$个根。综上，第二类斯特林数的生成函数只有零根和负实根，原命题得证。
+
+    同学们可以尝试证明分拆数$P_{n,k}$也是单峰数列。
+
+    \section{伯兰特-切比雪夫定理与素数定理}
+
+    \subsection{证明$2^{32}+1$不是素数}
+    上次课提到欧拉证明了$2^{32}+1$不是素数，这里给出证明：
+
+    \begin{proof}
+        注意到$641=5^4+2^4=2^7\cdot 5+1$，所以有：
+        \begin{align*}
+            2^{32}+1&=(2^7)^4\cdot16+1=(2^7)^4\cdot(641-625)+1\\
+            &=2^{28}\cdot641+1-(2^7\cdot5)^4=2^{28}\cdot 641+(1+640)\cdot(1-640)\cdot(1+640^2)\\
+            &=641\cdot (2^{28}-639\cdot(1+640^2))
+        \end{align*}
+        由此得出，$2^{32}+1$含有因子641，不是素数。
+    \end{proof}
+
+    \subsection{伯兰特-切比雪夫定理（Bertrand–Chebyshev theorem）及其证明}
+    \begin{theorem}
+       对于任意大于等于$3$的正整数$n$，在$(n,2n]$中存在素数。
+    \end{theorem}
+    \begin{proof}
+        上次课中，我们给出了证明的前半部分。我们采用反证法，假设在$(n,2n]$之间不存在素数。依据这一假设，我们将从$\binom{2n}{n}$出发，试图给出$\binom{2n}{n}$的一个上界，并说明当$n$充分大时这个上界的量级要小于其实际下界的量级从而引出矛盾。
+        上次课中，我们证明了
+         \[
+            \binom{2n}{n}=\prod_{p\in P(2,\sqrt{2n})}p^{h_p(2n)-2h_p(n)}\cdot \prod_{p\in P(\sqrt{2n}+1,\frac{2n}{3})}p^{\lfloor\frac{2n}{p}\rfloor-2\lfloor\frac{n}{p}\rfloor}
+         \]
+        其中$P(n,m)$表示$[n,m]$区间的素数集合。$\prod_{p\in P(2,\sqrt{2n})}p^{h_p(2n)-2h_p(n)}$的量级已经在上节课给出，余下的证明将给出$\prod_{p\in P(\sqrt{2n}+1,\frac{2n}{3})}p^{\lfloor\frac{2n}{p}\rfloor-2\lfloor\frac{n}{p}\rfloor}$的一个上界。
+
+        对于任意自然数$m$有：
+        \[
+            \prod_{p\in P(2,m)}p=\prod_{p\in P(2,\lfloor\frac{m}{2}\rfloor)}p \cdot \prod_{p\in P(\lfloor\frac{m}{2}\rfloor+1,m)}p
+        \]
+        因为$m-\lfloor\frac{m}{2}\rfloor=\lceil\frac{m}{2}\rceil$，考虑：
+        \[
+            \binom{m}{\lfloor\frac{m}{2}\rfloor}=\frac{m!}{\lfloor\frac{m}{2}\rfloor!\lceil\frac{m}{2}\rceil!}=\frac{m\cdot(m-1)\cdots(\lceil\frac{m}{2}\rceil+1)}{\lfloor\frac{m}{2}\rfloor!}
+        \]
+        当$m$是偶数，即$m=2k$时，$\binom{2k}{k}=\frac{2k\cdot(2k-1)\cdots(k+1)}{k!}$，对于大于$k$的素数，它们都出现在分子中，但都不会出现在分母中，所以不会被分母中的数约掉，所以有$\left(\prod_{p\in P(k+1,2k)}p\right)\mid \binom{2k}{k}$。当$m$是奇数，即$m=2k+1$时，对于大于$k$的素数，除去$k+1$（如果它是素数），都出现在分子中但不在分母中，所以有$\left(\prod_{p\in P(k+1,2k+1)}p\right)\mid (k+1)\binom{2k+1}{k}$。综上所述：
+        \[\left(\prod_{p\in P(\lfloor\frac{m}{2}\rfloor+1,m)}p\right)\leq \left\lceil\frac{m}{2}\right\rceil\binom{m}{\lfloor\frac{m}{2}\rfloor}\]
+        设$P(m)=\prod_{p\leq m}p$，由此得到递推：
+        \[\prod_{p\in P(2,m)}p\leq \left(\prod_{p\in P(2,\lfloor\frac{m}{2}\rfloor)}p\right)\left\lceil\frac{m}{2}\right\rceil\binom{m}{\lfloor\frac{m}{2}\rfloor}\]
+        解得：
+        \[
+            \prod_{p\in P(2,m)}p\leq 2^{2m+(\log_2 m)^2}
+        \]
+        最终得到：
+        \[
+            \Omega\left(\frac{4^n}{2n}\right)=\binom{2n}{n}=\tilde O\left((2n)^{\frac{\sqrt{2n}}{2}}\cdot {4}^{\frac{2n}{3}}\right)
+        \]
+        显然左侧的增长要远快于右侧，当$n$充分大时引发矛盾，原命题得证。
+      \end{proof}
+
+    \subsection{素数定理（Prime number theorem）及其简单版本的证明}
+    \subsubsection{素数定理叙述}
+    素数定理描述素数的大致分布情况，定义
+    \[\pi(n):=|\{p|p\leq n,p\textrm{是素数}\}|\]
+    素数定理就是尽可能地逼近$\pi(n)$，可以证明：
+    \[\pi(n)\sim\frac{x}{\ln x}\]
+    即：
+    \[\lim_{x\to\infty} \frac{\pi(x)}{x/\ln x} = 1 \tag{1}\]
+
+    1792年，卡尔·弗里德里希·高斯（Carl Friedrich Gauss）提出素数定理，几乎在同一时候，阿德里安-马里·勒让德（Adrien-Marie Legendre）猜想存在上述的逼近公式。巴夫尼提·切比雪夫（Pafnuty Chebyshev）对素数定理的研究作出了重要贡献，他证明：存在两个正实数$C_1$和$C_2$，使如下不等式对充分大的$x$成立：
+    \[C_1\frac{x}{\ln x} \leq \pi(x) \leq C_2\frac{x}{\ln x}\]
+    其中$C_1=0.92...,C_2=1.055...$。
+
+    素数定理最终由雅克·阿达马（Jacques Hadamard）和查尔斯·德拉瓦莱普森（Charles de la Vallée-Poussin）在1896年分别独立给出证明。1948年，阿特勒·塞尔伯格（Atle Selberg）和保罗·埃尔德什（Paul Erd\"os）给出了素数定理的初等证明，只需用数论方法证明。有必要指出的是，虽然该初等证明只用到初等的办法，却比用到复分析的证明更为复杂。
+
+    \subsubsection{素数定理的部分证明}
+    由2.2节的证明得知：
+    \[\prod_{p \in P(2,n)}p \leq 2^{2n+(\log_{2}n)^2}\]
+    又注意到：
+    \[\prod_{p \in P(2,n)}p \geq \prod_{p\in P(\frac{n}{2}+1,n)}p \geq \left(\frac{n}{2}\right)^{\pi(n)-\pi(\frac{n}{2})}\]
+    得到如下递推式：
+    \[\pi(n) \leq \pi\left(\frac{n}{2}\right)+O\left(\frac{n}{\ln n}\right)\]
+    不妨设存在$k$令$\sqrt{n}=\frac{n}{2^k}$，解得：
+    \begin{align*}
+        \pi(n) &\leq O\left(\frac{n}{\ln n}+\frac{\frac{n}{2}}{\ln \frac{n}{2}}+\cdots+\frac{\sqrt{n}}{\ln \sqrt{n}}+\frac{\frac{\sqrt{n}}{2}}{\ln {\frac{\sqrt{n}}{2}}}+
+            \frac{\frac{\sqrt{n}}{4}}{\ln {\frac{\sqrt{n}}{4}}}+\cdots\right)\\
+        \pi(n) &\leq O\left(\frac{n}{\ln \sqrt{n}}+\frac{\frac{n}{2}}{\ln \sqrt{n}}+\cdots+\frac{\sqrt{n}}{\ln \sqrt{n}}+\frac{\frac{\sqrt{n}}{2}}{1}+
+            \frac{\frac{\sqrt{n}}{4}}{1}+\cdots\right)\\
+        \pi(n) &\leq O\left(\frac{4n}{\ln n}+O(\sqrt{n})\right)\\
+        \pi(n) &= O\left(\frac{n}{\ln n}\right)
+    \end{align*}
+    上面的证明放缩得比较宽松，如果将$\frac{n}{2}$换成$\sqrt{n}$，$n^{\varepsilon}$等，可以将$C_{1}$，$C_{2}$进一步逼近。但是，这不足以证明素数定理。
+
+    $\pi(n)$下界的证明留作作业。
+
+    \section{狄利克雷定理（Dirichlet's theorem）}
+        \begin{theorem}
+            对于任意互素的正整数$a,b$，存在无穷多个自然数$k$，满足$ak+b$是素数。
+        \end{theorem}
+        该定理由勒热纳·狄利克雷（Lejeune Dirichlet）于1837年证明，从另一个侧面提供了素数分布的刻画。本节我们将证明两个狄利克雷定理的特例。
+    \subsection{$4k+3$型素数无穷}
+    反证假设$4k+3$型的素数只有有限个，记为$p_{1},p_{2},...,p_{n}$。考虑素数
+    \[N=4p_{1}p_2\cdots p_{n}-1 \equiv 3 \pmod4\]
+    显然，$p_{1},...,p_{n}$不是$N$的素因子。除了素数2，其余素数均不为偶数。所以$N$的所有素因子都是$4k+1$型，因为$4k+1$型的素数乘积依然$4k+1$型的，即$N\equiv 1\pmod 4$，矛盾！
+
+    按照相同的思路，我们还可以证明模$6$余$5$的素数有无限多个。
+    \subsection{$4k+1$型素数无穷}
+    首先，引入二次剩余的概念。
+
+    \begin{definition}[二次剩余]
+        对于正整数$a,n$，当存在整数$b$满足$b^2\equiv a\pmod n$，则被称$a$为\textbf{模$n$的二次剩余}(quadratic residue modulo $n$)。
+    \end{definition}
+
+    例如，当$p=5$时，有：
+    \[
+        1^{2} \equiv 1,\quad 2^{2} \equiv 4,\quad 3^{2} \equiv 4,\quad 4^{2} \equiv 1,\quad 5^{2} \equiv 0 \pmod 5
+    \]
+    不难发现，5的二次剩余只有0，1，4。
+
+    又例如，当$p=7$时，有：
+    \[
+        1^{2} \equiv 1,\quad 2^{2} \equiv 4,\quad 3^{2} \equiv 2,\quad 4^{2} \equiv 2,\quad 5^{2} \equiv 4,\quad 6^{2} \equiv 1,\quad 7^2 \equiv 0\pmod 7
+    \]
+    即7的二次剩余只有0，1，2，4。
+
+    对于$4k+1$型素数$p$，存在$x$，使得$x^{2}+1 \equiv 0 \pmod p$；而对于$4k+3$型素数$p$，不存在$x$，使得$x^{2}+1 \equiv 0 \pmod p$。该结论将在下节课给出证明。
+
+    利用$4k+3$型素数的性质，我们可以证明$4k+1$型的素数有无穷个。假设$4k+1$型的素数有有限个，记为$p_{1},p_{2},...,p_{n}$，考虑：
+    \[N=4p_{1}^{2}p_2^2\cdots p_{n}^2+1\]
+    显然，$2\nmid N$且$p_{i} \nmid N,i=1,2,...,n$，所以$N$的因子都是$4k+3$型，即存在$q=4k+3$，使得$N \equiv 0\pmod q$。与二次剩余性质矛盾！所以，$4k+1$型的素数有无穷个。
+
+\end{document}
+
+
+
+
+
+

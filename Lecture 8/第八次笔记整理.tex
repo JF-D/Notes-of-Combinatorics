@@ -1,0 +1,230 @@
+\documentclass[11pt]{article}
+
+\usepackage[a4paper]{geometry}
+\geometry{left=2.0cm,right=2.0cm,top=2.5cm,bottom=2.5cm}
+
+\usepackage{ctex}
+\usepackage{amsmath,amsfonts,graphicx,amssymb,bm,amsthm}
+\usepackage{algorithm,algorithmicx}
+\usepackage[noend]{algpseudocode}
+\usepackage{fancyhdr}
+\usepackage{mathrsfs}
+\usepackage{indentfirst}
+\setlength{\parindent}{2em}
+
+\newcounter{counter_exm}\setcounter{counter_exm}{1}
+%\newcounter{counter_thm}\setcounter{counter_thm}{1}
+%\newcounter{counter_lma}\setcounter{counter_lma}{1}
+%\newcounter{counter_dft}\setcounter{counter_dft}{1}
+%\newcounter{counter_clm}\setcounter{counter_clm}{1}
+%\newcounter{counter_cly}\setcounter{counter_cly}{1}
+
+\newtheorem{theorem}{{\hskip 1.7em \bf 定理}}
+\newtheorem{lemma}[theorem]{\hskip 1.7em 引理}
+\newtheorem{proposition}[theorem]{Proposition}
+\newtheorem{claim}[theorem]{\hskip 1.7em 命题}
+\newtheorem{corollary}[theorem]{\hskip 1.7em 推论}
+\newtheorem{definition}[theorem]{\hskip 1.7em 定义}
+
+\renewcommand{\emph}[1]{\begin{kaishu}#1\end{kaishu}}
+
+\newenvironment{solution}{{\bf 解 \quad}}
+
+
+\renewenvironment{proof}{{\bf 证明 \quad}}{\hfill$\qed$\par}
+\newenvironment{example}{{\vskip1em \bf 例 \arabic{counter_exm}\quad}}{\addtocounter{counter_exm}{1}\par\vskip1em}
+
+\newenvironment{concept}[1]{{\bf #1\quad} \begin{kaishu}} {\end{kaishu}\par}
+
+\newcommand\E{\mathbb{E}}
+\renewcommand{\figurename}{图}
+
+\begin{document}
+
+    \pagestyle{fancy}
+    \lhead{\kaishu 中国科学院大学}
+    \chead{}
+    \rhead{\kaishu 2017年秋季学期组合数学}
+
+    \begin{center}
+        {\LARGE \bf 组合数学第八讲}\\
+    \end{center}
+        \begin{kaishu}
+            授课时间: 2017年10月31日\quad
+            授课教师: 孙晓明
+            \hfill 记录人: 曾鸿斌
+        \end{kaishu}
+
+    \section{拆分数}
+    上节课讨论了第一类斯特林数和第二类斯特林数，本节讨论的是另一种特殊的计数——拆分数（Partition number）。我们在之前的课上讨论过这样的问题：
+
+    \begin{example}
+        \emph{$n$个相同的球，放到$m$个相同的盒子中，每个盒子均不为空的方案数有多少种？}
+    \end{example}
+    \vskip -1em
+    \begin{definition}[拆分数]
+        $P_{n,m}$表示将自然数$n$拆分成$m$个正整数（不考虑顺序）的方法数，即：
+        \[
+            P_{n,m}:=|\{(x_1,\ldots,x_m)\in \mathbb{Z}^m\mid \sum_{k=1}^m x_k=n, x_1\geq x_2\geq \cdots \geq x_m \geq 1\}|
+        \]
+        拆分数$P_{n}$表示将自然数$n$拆分成任意个正整数（不考虑顺序）的方法数，即$P_n:=\sum_{k\geq 1}P_{n,k}$。
+    \end{definition}
+    显然，根据拆分数的定义，满足条件的方案数有$P_{n,m}$种。
+    \vskip1em
+    已知拆分数$P_1=1,P_2=2,P_3=3,P_4=5$……发现$P_n$是单调递增的。对于$n-1$的任意拆分$x_1+x_2+...+x_k=n-1$，总存在$n$的拆分$x_1+x_2+...+x_k+1=n$与之对应，易知不同的$n-1$拆分的对应到不同的$n$拆分，即存在从$n-1$的拆分集合到$n$的拆分集合的单射，同时又注意到$n-1$的任何拆分都不可能映到$n$仅拆成一个数的拆分，即这样的映射不是满射，于是有$P_n< P_{n-1}$。
+
+    \begin{example}
+        \emph{将$2n$拆分成$n$个正整数有多少种拆法？}
+    \end{example}
+    即求解$P_{2n,n}$。下面的定理给出了更一般的结论：
+
+    \begin{theorem}
+        对于任意$n,m\in \mathbb{N}$，有：
+        \[
+            P_{n+m,m}=P_{n,\leq m}
+        \]
+        其中，$P_{n,\leq m}:=\sum_{k=1}^mP_{n,k}$。
+    \end{theorem}
+
+    \begin{proof}
+        求解$P_{n+m,m}$，即求$x_1\geq\cdots\geq x_m\geq 1$约束下不定方程$x_1+x_2+...+x_m=n+m$的整数解的个数，对于$i=1,2,\ldots,m$定义新变量$y_i=x_i-1$，问题转化成求$y_1\geq\cdots\geq y_m\geq 0$ 约束下$y_1+y_2+...+y_m=n$的整数解的个数，这一转化使变量可以为0，注意新方程的解的个数可以描述为将$n$拆分为不超过$m$个正整数的方案数，即$P_{n,\leq m}$。
+    \end{proof}
+    \vskip1em
+    由定理2可知$P_{2n,n}=P_{n,\leq n}=P_n$。
+
+    \section{拆分数的性质}
+    在记号$P_{n,m}$中，我们限制了拆分出来的正整数的个数，如果改为限制拆分得到正整数的最大值，共存在多少种满足要求的拆分呢？
+    \begin{definition}
+        $Q_{n,m}$表示将自然数$n$拆分成若干个正整数，其中最大值为$m$的方法数，即：
+        \[
+            Q_{n,m}:=|\{(x_1,\ldots,x_n)\in\mathbb{Z}^n\mid \sum_{k=1}^n x_k=n, m=x_1\geq x_2\geq \ldots\geq x_n\geq 0\}|
+        \]
+    \end{definition}
+    计算发现$Q(5,2)=2=P(5,2),Q(5,3)=2=P(5,3)$，我们猜想$P(n,m)=Q(n,m)$，事实上该结论是正确的。
+
+    \begin{theorem}
+        对于任意$n,m\in\mathbb{N}$：
+        \[Q(n,m)=P(n,m)\]
+    \end{theorem}
+
+    \begin{proof}
+        定义$\mathcal{P}_{n,m}$为将$n$拆分为$m$个正整数的拆分集合，又定义$\mathcal{Q}_{n,m}$为将$n$拆分为最大值为$m$的若干个正整数的拆分集合，即：
+        \begin{align*}
+            \mathcal{P}_{n,m}&:=\{(x_1,\ldots,x_m)\in \mathbb{Z}^m \mid \sum_{k=1}^m x_k=n, x_1\geq x_2\geq \ldots\geq x_m\geq 1\}\\
+            \mathcal{Q}_{n,m}&:=\{(x_1,\ldots,x_n)\in \mathbb{Z}^n \mid \sum_{k=1}^n x_k=n, m=x_1\geq x_2\geq \ldots\geq x_n\geq 0\}
+        \end{align*}
+        根据定义，有$P_{n,m}=|\mathcal{P}_{n,m}|$且$Q_{n,m}=|\mathcal{Q}_{n,m}|$。构造$f:\mathcal{P}_{n,m}\to\mathbb{N}^n$如下：
+        \[
+            (x_1,x_2,\ldots,x_m)\mapsto(|\{i\in[m]|x_i\geq 1\}|,|\{i\in[m]|x_i\geq 2\}|,\ldots,|\{i\in[m]|x_i\geq n\}|)
+        \]
+        对于任意$(x_1,x_2,\ldots,x_m)\in \mathcal{P}_{n,m}$，考虑其像$y=f(x_1,x_2,\ldots,x_m)$，显然有：
+        \[
+            \forall j\in [m]\forall k_1>k_2\in [n]: x_j\in \{i\in[m]|x_i\geq k_1\} \Rightarrow x_j\in \{i\in[m]|x_i\geq k_2\}
+        \]
+        意味着对于任意$i,j\in[n]$，满足$i<j\Rightarrow y_i\geq y_j$；又有：
+        \begin{align*}
+            \sum_{j=1}^n y_j
+                &= \sum_{j=1}^n |\{i\in[m]|x_i\geq j\}|\\
+                &= \sum_{j=1}^n\sum_{i=1}^m [x_i\geq j]
+                = \sum_{i=1}^m x_i
+                = n
+        \end{align*}
+        根据$P_{n,m}$的定义，$x_i$均为正整数，故$y$还满足$y_1=|\{i\in[m]|x_i\geq 1\}|=m$，推知$y\in \mathcal{Q}_{n,m}$。对于任意不相同的$x,x'\in \mathcal{P}_{n,m}$，$y=f(x),y'=f(x')$为$f$在这两个拆分上的像，令$k=\arg\min\{i\in[m]\mid x_i\not=x_i'\}$，不失一般性假设$x_k>x_k'$，根据$f$定义易知$y_{x_k}\geq k > y_{x_k}'$，推知$y\not=y'$。综上$f$是$\mathcal{P}_{n,m}$到$\mathcal{Q}_{n,m}$的单射。
+
+        对于任何$y\in \mathcal{Q}_{n,m}$，存在$x=(|\{i\in[n]\mid y_i\geq 1\}|,|\{i\in[n]\mid y_i\geq 2\}|,\ldots,|\{i\in[n]\mid y_i\geq m\}|)$，通过类似证明单射的方法，易验证$x\in \mathcal{P}_{n,m}$且$f(x)=y$，即$f$是$\mathcal{P}_{n,m}$到$\mathcal{Q}_{n,m}$的满射。结合之前的结论，可知$f$是两者间的一一映射，原命题得证。
+    \end{proof}
+
+    上述证明有一种非常直观的解释。我们将任意$(x_1,\ldots,x_m)\in \mathcal{P}_{n,m}$表示成$n$块方砖的摆放方式：第1列摆$x_1$块、第2列摆$x_2$块……以此类推。例如拆分$14=4+4+3+2+1$，我们如图1左侧方法摆放。因为该拆分属于$\mathcal{P}_{n,m}$，故一定有$m$列方砖。现在，我们将图案沿着虚线翻转，得到了如图1右侧的新摆放方式，对应着拆分$14=5+4+3+2$。注意到翻转后的摆放方法一定有$m$行，即这种拆分方法拆得正整数的最大值为$m$，即新拆分属于$\mathcal{Q}_{n,m}$，由此我们得到了两类拆分的一一对应关系。这种拆分的表示方法称为Ferrers图。
+    \begin{figure}[H]
+        \center
+        \begin{minipage}[b]{0.4\textwidth}
+            \center
+            \includegraphics[scale=0.6]{p1.pdf}
+        \end{minipage}
+        \begin{minipage}[b]{0.4\textwidth}
+            \center
+            \includegraphics[scale=0.6]{p2.pdf}
+        \end{minipage}
+        \caption{拆分的Ferrers图表示}
+    \end{figure}
+
+    \section{拆分数的估计}
+
+    $P_n$难以写出显式表达式，要估计$P_n$的大小，需要给出其上下界。（本节中$\sqrt{n}$默认为向下取整）
+
+    一个宽松的上界是容易给出的，注意到$P_{n,m}$是关于$n$的一个$m$拆分，放松约束$x_1\geq x_2\geq ...\geq x_m$，这样的拆分数不可能超过不定方程$x_1+x_2+\cdots+x_m=n$的正整数解的个数，即有$P_{n,m}\leq \binom{n-1}{m-1}$，于是$P_n=P_{n,1}+P_{n,2}+...+P_{n,n}\leq \binom{n-1}{0}+\binom{n-1}{1}+...+\binom{n-1}{n-1}=2^{n-1}$。 但这个上界太过宽松了，下面的定理给出了更紧的上界。
+
+    \begin{theorem}
+        存在正实数$c$，对于所有的自然数$n$，满足：\[P_n\leq e^{c\sqrt{n}\ln n}\]
+    \end{theorem}
+
+    %得到集族$\mathcal{S}^1=\{S_x^1\mid x\in \mathcal{P}_n\}, \mathcal{S}^2=\{S_x^2\mid x\in \mathcal{P}_n\}$
+
+    \begin{proof}
+        对于某个拆分$(x_1,x_2,...,x_k)\in\mathcal{P}_n$，考虑到拆分不计顺序，不妨令其满足$x_1\geq x_2\geq\cdots\geq x_n$，定义$(x^{\geq \sqrt{n}},x^{< \sqrt{n}}):=x$，其中$x^{\geq\sqrt{n}}$每个分量大于等于$\sqrt{n}$，$x^{<\sqrt{n}}$每个分量小于$\sqrt{n}$，又定义：
+        \[S^{\geq\sqrt{n}}:=\{x^{\geq\sqrt{n}}\mid x\in \mathcal{P}_n\}, S^{<\sqrt{n}}:=\{x^{<\sqrt{n}}\mid x\in \mathcal{P}_n\}\]
+        现在任给$S^{\geq\sqrt{n}}$中的一个向量$x$，注意到$l=\dim{x}\leq \sqrt{n}$，否则$\|x\|_1>n$，这是不可能的。令$t=\|x\|_1$，定义新向量$y=(x_1+n-t,x_2,\ldots,x_l)$，有$\|y\|_1=n$且$y_1\geq\cdots\geq y_l$，即$y\in\mathcal{P}_{n,\leq \sqrt{n}}$，从而建立了一个从$\mathcal{P}_n$到$\mathcal{P}_{n,\leq \sqrt{n}}$的映射，根据定义，$S^{\geq\sqrt{n}}$中不同的向量显然会映到$\mathcal{P}_{n,\leq \sqrt{n}}$中不同的拆分，即这样的映射是单射，推知$|S^{\geq\sqrt{n}}|\leq |\mathcal{P}_{n,\leq \sqrt{n}}|$。
+
+        考虑$(x_1,\ldots,x_l)\in S^{<\sqrt{n}}$，令$t=\sum_i x_i$，在$(x_1,\ldots,x_l)$后加上$t$个值为1的分量得到：
+        \[x'=(x_1,\ldots,x_l,1,\ldots,1)\]
+        显然$\|x'\|_1=n$且有$x_1'\geq x_2'\geq\cdots\geq x_{l+t}'$，即$x'\in\mathcal{Q}_{n,\leq \sqrt{n}}$，从而建立了一个从$S^{<\sqrt{n}}$到$\mathcal{Q}_{n,\leq m}$的映射，易验证这样的映射是单射，可推知$|S^{<\sqrt{n}}|\leq |\mathcal{Q}_{n,\leq m}|$。
+
+        利用这两个不等式给出$P_n$的一个上界，任给$(x_1,x_2,...,x_k)\in\mathcal{P}_n$，有$x=(x^{\geq \sqrt{n}},x^{< \sqrt{n}})\in S^{\geq\sqrt{n}}\times S^{<\sqrt{n}}$，这是一个从$\mathcal{P}_n$到$S^{\geq\sqrt{n}}\times S^{<\sqrt{n}}$的单射，即$|\mathcal{P}_n|\leq |S^{\geq\sqrt{n}}|\cdot|S^{<\sqrt{n}}|\leq P_{n,\leq\sqrt{n}}\cdot Q_{n,\leq\sqrt{n}}= P_{n,\leq\sqrt{n}}^2$，由于$P_{n,\leq \sqrt{n}}$是对$n$进行不超过$\sqrt{n}$拆分的可能方法数，其不超过不定方程$x_1+\cdots+x_{\sqrt{n}}=n$的正整数解的个数，于是有：
+        \[
+            P_{n,\leq \sqrt{n}}^2
+                \leq {\binom{n+\sqrt{n}-1}{\sqrt{n}-1}}^2
+                \leq \left(\frac {n+\sqrt{n}-1}{\sqrt{n}-1}\cdot e\right)^{2\sqrt{n}}
+                =e^{O(\sqrt{n}\ln n)}
+        \]
+        由此可推知$P_n\leq e^{O(\sqrt{n}\ln n)}$，原命题得证。
+    \end{proof}
+    下面再给出$P_n$的一个下界。
+    \begin{theorem}
+        存在正实数$c$，对于所有的自然数$n$，满足：
+        \[e^{c\sqrt{n}}\leq P_n\]
+    \end{theorem}
+    \begin{proof}
+        记$\mathcal{A}=2^{[\sqrt{n}-1]}$，任给$S\in\mathcal{A}$，设$S=\text\{x_1,...,x_k\text\}$，不妨设$x_1\geq ...\geq x_k$，令$t=x_1+...+x_k$，令$y=(n-t,x_1,x_2,\ldots,x_k)$，显然有$y\in\mathcal{P}_n$，我们得到一个从$\mathcal{A}$到$\mathcal{P}_n$的映射，又因为$y_0>\sqrt{n}-1$，$\mathcal{A}$中的每个元素映到的像均不相同，即这样的映射是单射，从而有$P_n\geq |\mathcal{A}|=2^{\sqrt{n}-1}=e^{\Omega(\sqrt{n})}$。
+    \end{proof}
+    但事实上，我们仍可以进一步地更精确地估计：
+    \begin{theorem}
+        对于任意自然数$n$：
+        \[P_n=e^{\Theta(\sqrt{n})}\]
+    \end{theorem}
+
+    \begin{proof}
+        为了证明，我们引入生成函数:
+        \[\mathscr{P}(x)=\sum_{n=0}^\infty {P_nx^n}=(1+x+x^2+\cdots)\cdot(1+x^2+x^4+\cdots)\cdot(1+x^3+x^6+\cdots)\cdots=\prod_{i=1}^\infty \frac{1}{1-x^i}\]
+        考虑生成函数的意义，易知上述函数中$x^n$的系数对应了拆分数$P_n$。进一步有：
+        \[\ln \mathscr{P}(x)=-\sum_{i=1}^\infty \ln(1-x^i)=\sum_{i=1}^\infty \sum_{j=1}^\infty {\frac {x^{ij}}{j}}=\sum_{j=1}^\infty\sum_{i=1}^\infty {\frac {x^{ij}}{j}}\]
+        这里用到了$\ln(1-x)$的麦克劳林展开。注意到：
+        \[\sum_{i=1}^\infty {\frac {x^{ij}}{j}}=\frac {x^j}{j(1-x^j)}=\frac {x^j}{j(1-x)\sum_{i=0}^{j-1} x^i}\leq \frac {x^j}{j(1-x)(jx^{j-1})}=\frac {x}{j^2(1-x)}\]
+        当$0<x<1$时上式成立，所以：
+        \[\ln \mathscr{P}(x)=\sum_{j=1}^\infty\sum_{i=1}^\infty {\frac {x^{ij}}{j}}\leq \frac {x}{1-x} \sum_{i=1}^\infty {\frac{1}{i^2}}=\frac{\pi^2x}{6(1-x)}\]
+
+        另一方面，当$0<x<1$时$\ln \mathscr{P}(x)\geq \ln {P_nx^n}=\ln P_n+n\ln x$，于是有$\ln P_n\leq \frac{\pi^2x}{6(1-x)}-n\ln x$，将$x=1-\frac {1}{\sqrt{n}}$代入，利用其泰勒展开可得$\ln P_n= O(\sqrt{n})$，即$P_n= e^{O(\sqrt{n})}$，结合定理6中$P_n$的下界，原命题得证。
+    \end{proof}
+    利用拆分数的生成函数，我们还可以证明如下定理：
+    \begin{theorem}
+        将自然数$n$拆分成若干不相等的正整数的拆分数，与将其拆分成若干正奇数的拆分数相同。
+    \end{theorem}
+    \begin{proof}
+        我们可以写出这两种拆分数对应的生成函数：
+        \begin{gather*}
+            \mathscr{D}(z)=(1+z)\cdot(1+z^2)\cdot(1+z^3)\cdots=\prod_{i=1}^\infty (1+z^i)\\
+            \mathscr{O}(z)=(1+z+\cdots)\cdot(1+z^3+\cdots)\cdot(1+z^5+\cdots)\cdots =\prod_{i=1}^\infty \frac{1}{1-z^{2i-1}}
+        \end{gather*}
+        那么，有如下推导：
+        \begin{align*}
+            \mathscr{D}(z)&=\frac{1-z^2}{1-z}\cdot\frac{1-z^4}{1-z^2}\cdot\frac{1-z^6}{1-z^3}\cdot\frac{1-z^8}{1-z^4}\cdots\\
+                &=\frac{1}{1-z}\cdot\frac{1}{1-z^3}\cdot\frac{1}{1-z^5}\cdot\frac{1}{1-z^7}\cdots\\
+                &=\mathscr{O}(z)
+        \end{align*}
+        第一行中，分号下端形如$1-z^{2k}$的项，一定会与分号上端的某项相消，从而有此推导。两种拆分的生成函数相同，那么两种拆分数也相同。
+    \end{proof}
+\end{document}
+
+
+
+
+

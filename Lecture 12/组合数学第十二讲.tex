@@ -1,0 +1,315 @@
+\documentclass[11pt]{article}
+
+\usepackage[a4paper]{geometry}
+\geometry{left=2.0cm,right=2.0cm,top=2.5cm,bottom=2.5cm}
+
+\usepackage{ctex}
+\usepackage{amsmath,amsfonts,graphicx,amssymb,bm,amsthm}
+\usepackage{algorithm,algorithmicx}
+\usepackage[noend]{algpseudocode}
+\usepackage{fancyhdr}
+
+
+\newcounter{counter_exm}\setcounter{counter_exm}{1}
+%\newcounter{counter_thm}\setcounter{counter_thm}{1}
+%\newcounter{counter_lma}\setcounter{counter_lma}{1}
+%\newcounter{counter_dft}\setcounter{counter_dft}{1}
+%\newcounter{counter_clm}\setcounter{counter_clm}{1}
+%\newcounter{counter_cly}\setcounter{counter_cly}{1}
+
+\newtheorem{theorem}{{\hskip 1.7em \bf 定理}}
+\newtheorem{lemma}[theorem]{\hskip 1.7em 引理}
+\newtheorem{proposition}[theorem]{Proposition}
+\newtheorem{claim}[theorem]{\hskip 1.7em 命题}
+\newtheorem{corollary}[theorem]{\hskip 1.7em 推论}
+\newtheorem{definition}[theorem]{\hskip 1.7em 定义}
+
+\renewcommand{\emph}[1]{\begin{kaishu}#1\end{kaishu}}
+
+\newenvironment{solution}{{\noindent\hskip 2em \bf 解 \quad}}
+
+
+\renewenvironment{proof}{{\noindent\hskip 2em \bf 证明 \quad}}{\hfill$\qed$\par}
+\newenvironment{example}{{\noindent\hskip 2em \bf 例 \arabic{counter_exm}\quad}}{\addtocounter{counter_exm}{1}\par}
+
+\newenvironment{concept}[1]{{\bf #1\quad} \begin{kaishu}} {\end{kaishu}\par}
+
+\newcommand\E{\mathbb{E}}
+
+\begin{document}
+
+    \pagestyle{fancy}
+    \lhead{\kaishu 中国科学院大学}
+    \chead{}
+    \rhead{\kaishu 2017年秋季学期组合数学}
+
+    \begin{center}
+        {\LARGE \bf 组合数学第十二讲}\\
+    \end{center}
+        \begin{kaishu}
+            授课时间: 2017年12月5日\quad
+            授课教师: 孙晓明
+            \hfill 记录人: 姚依航
+        \end{kaishu}
+
+    \section{二次互反律的证明}
+    \begin{proof}
+    	由欧拉判别准则得
+   		\[
+   		(\frac{p}{q})\equiv p^\frac{q-1}{2}(mod p)
+   		\] 		
+   		\qquad 上节课已经证明
+   		\begin{align*}
+   		(\frac{p}{q})&\equiv p^{\frac{q-1}{2}} \\
+   					 &\equiv(-1)^{|{1\geq j\leq \frac{q-1}{2}\mid {j\frac{p}{q}}>\frac{1}{2}}|}\\
+   				     &\equiv(-1)^{\sum_{j=1}^{\frac{q-1}{2}}\lbrack j\frac{p}{q}\rbrack}    (mod p)
+   		\end{align*}
+   		\qquad 其中，$\{\}$是高斯符号，表示取符号内该数的小数部分,则
+  		\[
+  		(\frac{p}{q})(\frac{q}{p})=(-1)^{\sum_{j=1}^{\frac{q-1}{2}}\lbrack j\frac{p}{q}\rbrack+\sum_{i=1}^{\frac{p-1}{2}}\lbrack i\frac{p}{q}\rbrack}
+  		\]
+   		\qquad 下证：
+   		\[
+   		\sum_{j=1}^{\frac{q-1}{2}}\lbrack j\frac{p}{q}\rbrack+\sum_{i=1}^{\frac{p-1}{2}}\lbrack i\frac{p}{q}\rbrack=\frac{(p-1)(q-1)}{4}
+   		\]	
+    \end{proof}
+
+	\section{费马素数定理}
+	\begin{theorem}
+		对于一个素数p，$\exists x,y\in \mathbb{Z},$使得$p=x^2+y^2\Longleftrightarrow$ p是$4k+1$型素数.
+		\\
+		例：$3$不满足，$5$=$1^2+2^2$,且$5$是$4k+1$型素数，$7$不满足，$11$不满足，$13=2^2+3^2$
+		\\
+	\end{theorem}
+	\begin{proof}
+		$1^o$若
+		$$p=x^2+y^2$$则
+		$$x^2+y^2\equiv0(mod p)$$即
+		$$x^2\equiv-y^2(mod p)$$
+		由$y\neq0$得$y$可逆,则
+		$$x^2y^{-2}\equiv-1(modp)$$故
+		$$(xy^{-1})^2\equiv-1(modp)$$
+		即
+		$-1$是p的二次剩余
+		
+		即$$(\frac{-1}{p})=1$$
+		
+		由上节课证明的定理p是$4k+1$型素数$\Longleftrightarrow (\frac{-1}{p})=1$得，
+		
+		p是$4k+1$型素数	
+	\end{proof}
+
+    \begin{example}
+        什么样的素数$p$, 能够写成两个整数$x,y$的平方和, 即$p=x^2+y^2$的形式?
+    \end{example}
+        首先, 考虑几个简单的例子:
+
+        $p=3$时, 不存在满足条件的$x,y$.
+
+        $p=5$时, $5=1^2+2^2$.
+
+        $p=7$时, 不存在满足条件的$x,y$.
+
+        $p=11$时, 不存在满足条件的$x,y$.
+
+        $p=13$时, $13=2^2+3^2$.
+
+        ...
+
+        通过上面的例子我们可以不完全归纳出: $4k+1$型素数能够写成两个整数的平方和, $4k+3$型素数不能够写成两个整数的平方和.
+
+        为什么$4k+3$型素数不能写成两个整数的平方和?
+
+    \begin{proof}
+        $p$是$4k+3$型素数, 若$p$能写成两个整数的平方和的形式, 则$\exists x,y$
+        $$x^2+y^2\equiv 0(mod p)$$
+        即
+        $$x^2\equiv -y^2(mod p)$$
+        在素域$mathbb{Z}_p$上, $y$有逆. 因此
+        $$(xy^{-1})^2\equiv -1(mod p)$$
+        但由勒让德符号
+        $$(\frac{-1}{p})=-1$$
+        即$-1$不是$p$的二次剩余, 与$(xy^{-1})^2\equiv -1(mod p)$矛盾, 故$p=4k+3$型素数不满足条件.
+    \end{proof}
+
+    为什么$4k+1$型素数一定能写成两个整数的平方和?
+
+    \begin{proof}
+        $p$是$4k+1$型素数, 由勒让德符号
+        $$(\frac{-1}{p})=1$$
+        得: $\exists z\in \mathbb{N}$, 使$z^2\equiv -1(mod p)$
+        考虑集合$A={(a,b)|a\le a,b \le \lbrack\sqrt{p}\rbrack}$
+        得
+        $$|A|=(\lbrack\sqrt{p}\rbrack+1)^2>(\sqrt{p})^2=p$$
+        对$\forall (a,b)\in A$, 考虑$a+bz(mod p)$
+        因为$|\mathbb{Z}_p|=p-1$, 而$(a,b)$有$p$组, 所以
+        $$\exists (a_1,b_1),(a_2,b_2)\in A, a_1+b_1z\equiv a_2+b_2z(mod p)$$
+        即$(a_1-a_2)\equiv z(b_2-b_1)(mod p)$, 对等式两边同时平方由$z^2\equiv -1(mod p)$得到
+        $$(a_1-a_2)^2\equiv -(b_1-b_2)^2(mod p)$$
+        即
+        $$(a_1-a_2)^2+(b_1-b_2)^2\equiv 0(mod p)$$
+        即$$p|(a_1-a_2)^2+(b_1-b_2)^2$$
+        由$(a_1,b_1), (a_2,b_2)$的选取可得
+        $$(a_1-a_2)_{max}=(b_1-b_2)_{max}=\lbrack\sqrt{p}\rbrack$$
+        $$0<(a_1-a_2)^2+(b_1-b_2)^2\le (\lbrack\sqrt{p}\rbrack)^2+(\lbrack\sqrt{p}\rbrack)^2<2p$$
+        在$0$到$2p$之间能够被$p$整除的整数只有$p$, 所以
+        $$(a_1-a_2)^2+(b_1-b_2)^2=p$$
+        即对$4k+1$型素数, 一定能写成两个整数的平方和.
+    \end{proof}
+
+
+	\begin{example}
+        类似的, 我们可以考虑什么样的素数$p$能够写成$x^2+2y^2$的形式?
+    \end{example}
+    首先, 考虑几个简单的例子:
+    $p=3$时, $3=1^2+2\cdot 1^2$.
+
+    $p=5$时, 不存在满足条件的$x,y$.
+
+    $p=7$时, 不存在满足条件的$x,y$.
+
+    $p=11$时, $11=3^2+2\cdot 1^2$.
+
+    ...
+
+    通过上面的例子我们可以推断$8k+3$型素数可以写成$x^2+2y^2$的形式. 接下来我们进行证明.
+    \begin{proof}
+    $p$是$8k+3$型素数, 由勒让德符号
+    $$(\frac{-2}{p})=1$$
+    得: $\exists z\in \mathbb{N}$, 使$z^2\equiv -2(mod p)$
+    考虑集合$A={(a,b)|a\le a,b \le \lbrack\sqrt{p}\rbrack}$
+    得
+    $$|A|=(\lbrack\sqrt{p}\rbrack+1)^2>(\sqrt{p})^2=p$$
+    对$\forall (a,b)\in A$, 考虑$a+bz(mod p)$
+    因为$|\mathbb{Z}_p|=p-1$, 而$(a,b)$有$p$组, 所以
+    $$\exists (a_1,b_1),(a_2,b_2)\in A, a_1+b_1z\equiv a_2+b_2z(mod p)$$
+    即$(a_1-a_2)\equiv z(b_2-b_1)(mod p)$, 对等式两边同时平方由$z^2\equiv -2(mod p)$得到
+    $$(a_1-a_2)^2\equiv -2(b_1-b_2)^2(mod p)$$
+    即
+    $$(a_1-a_2)^2+2(b_1-b_2)^2\equiv 0(mod p)$$
+    即$$p|(a_1-a_2)^2+2(b_1-b_2)^2$$
+    由$(a_1,b_1), (a_2,b_2)$的选取可得
+    $$(a_1-a_2)_{max}=(b_1-b_2)_{max}=\lbrack\sqrt{p}\rbrack$$
+    $$0<(a_1-a_2)^2+2(b_1-b_2)^2\le (\lbrack\sqrt{p}\rbrack)^2+2(\lbrack\sqrt{p}\rbrack)^2<3p$$
+    在$0$到$3p$之间能够被$p$整除的整数只有$p$和$2p$.
+    $1^o$若$(a_1-a_2)^2+2(b_1-b_2)^2=p$, 则命题得证.
+    $2^o$若$(a_1-a_2)^2+2(b_1-b_2)^2=2p$, 将该等式模$2$得
+    $$(a_1-a_2)^2\equiv 0(mod p)$$
+    所以, $a_1-a_2$能被$2$整除, 则
+    $$(b_1-b_2)^2+a(\frac{a_1-a_2}{2})^2=p$$
+    命题得证.
+    \end{proof}
+
+     \section{抽屉原理/鸽巢原理(Pigeonhole's Principle)/Dirichlet's Principle}
+    \begin{theorem}
+    	原理1： 把多于n+1个的物体放到n个抽屉里，则至少有一个抽屉里的东西不少于两件
+    	
+    	
+    	原理2： 把多于mn(m乘n)+1（n不为0）个的物体放到n个抽屉里，则至少有一个抽屉里有不少于（m+1）个物体。
+    \end{theorem}
+    \begin{example}
+    	S={1,2,3...100},从中取$51$个数,则$\exists a,b\in S$,使得$gcd(a,b)=1$
+    	
+    	
+    	\begin{proof}
+    		把相邻的两个数${1,2},{3,4}...{99,100}$看作一个抽屉，共50组
+    		
+    		取了$51$个数，则一定存在两个数在同一个组里，则这两个数相邻
+    		
+    		又相邻两数互素，故
+    		$\exists a,b\in S$,使得$$gcd(a,b)=1$$
+    		
+    		
+    		又，$51$是满足此条件的最小的数字
+    		
+    		反例：取$50$个数,若取的是${2,4,6,...100}$,不符合条件.
+    	\end{proof}
+
+    \end{example}
+
+
+	\begin{example}
+		$n$个人中一定两个人具有相同的朋友个数
+		
+		图论的语言：对于图$G(V,E),\exists u,v\in V,$,使得$deg(u)=deg(v)$
+		
+		\begin{proof}
+			每个人可能有的朋友个数：$0,1,2...n-1$,将每个人可能有的朋友个数看作抽屉.
+			
+			若一个人有$0$个朋友，则该人是一个孤立的点，剩下的人都不可能有$n-1$个朋友,即$n-1$和$0$不能同时出现
+			
+			相当于共有$n-1$个抽屉，共n个人，
+			
+			故一定有两个人有相同的朋友数
+		
+		\end{proof}
+	\end{example}
+
+
+
+
+
+
+	\begin{example}
+		对于$a_1,a_2,a_3...a_n \in \mathbb{Z}$，一定存在子集${a_{i_1},a_{i_2}...a_{i_k}}$,使得$n|(a_{i_1}+a_{i_2}+...+a_{i_k})$
+		
+		\begin{proof}
+			考虑前缀和$S_1=a_1,S_2=a_1+a_2,...S_j=a_1+a_2+...a_j,...$
+			考虑$n=100$
+			$$S_1,S_2...S_100(mod100) \in {0,1,2...,99}$$
+			若余数为$0$,则显然成立
+			
+			若余数不为$0$,$100$个前缀和模$100$的余数至少有$99$种可能，则$\exists i<j$使得
+			$$S_i\equiv S_j (mod 100)$$
+			$$100|(S_i-S_j)$$
+			其中$$S_i-S_j=a_{i_1}+a_{i_2}+...+a_{i_k}$$
+			故存在子集${a_{i_1},a_{i_2}...a_{i_k}}$,使得$$n|(a_{i_1}+a_{i_2}+...+a_{i_k})$$
+			
+			证明$100$是满足此条件的最小数字  反例：5若$n$是$99$,取$99$个$1$,不符合条件
+		\end{proof}	
+		\end{example}
+
+    \begin{example}
+    设$a_i$表示第$i$天做$n$道题, 连续做$60$天, 做的题数满足$\forall i, a_i \ge 1$, 且$\sum_{i=1}^{30}a_i\le 50, \sum_{i=31}^{60}a_i\le 50$, 证明: 一定存在若干天, 在这些天做的总题数为$19$道.
+    \end{example}
+    \begin{proof}
+    考虑前缀和序列${S_i}, 1\le i \le 60, S_i=\sum_{k=1}^{i}a_i$, 由$\forall i, a_i \ge 1$, 且$\sum_{i=1}^{30}a_i\le 50, \sum_{i=31}^{60}a_i\le 50$, 可以得到
+    $$1\le S_1 < S_2 < \cdots < S_{60}\le 100$$
+    对前缀和序列的每一项加上$19$, 可以得到
+    $$20\le S_1+19<s_2+19<\cdots<S_{60}+19\le 119$$
+    则${S_i}$和${S_i+19}$两个序列共有$120$项, 但最多有$119$个不同的数字, 由鸽巢原理
+    $$\exists i, j, i>j, S_i=S_j+19$$
+    即$$S_i-S_j=\sum_{k=1}^{i}a_i-\sum_{k=1}^{j}a_i=\sum_{k=i+1}^{j}a_i=19$$
+    因此一定存在若干天, 即第$i+1$天到第$j$天, 在这些天做的总题数为$19$道.
+    \end{proof}
+    事实上, 我们证明的是一个更强的结果, 即一定存在连续的若干天, 在这些天做的总题数为$19$道. 
+    
+    接下来我们考虑一个有趣的问题. 
+    
+    \begin{example}
+    一定可以从$50$名身高互不相同的同学中找到$8$名同学, 随学号增大, 他们的身高逐渐增加或者逐渐减小.
+    
+    \begin{proof}
+    将这$50$个同学按学号递增的顺序进行排序, 第$i$个学生学号为$N_i$, 对应的身高为$h_i$, 则有$N_1<N_2<\cdots<N_50$.
+    设$L_i$表示从第$i$个同学开始的最大身高递增列的长度, 则$L_i\ge 1$.   
+    
+    若存在$L_i]\ge 8$, 则找到了$8$名学生满足条件.
+    
+    若不存在$L_i]\ge 8$, 则$\forall i, 1\le L_i<8$. 由鸽巢原理, 一定存在$8$名学生, 从他们开始最大的身高递增列长度相等. 即
+    $$\exists k_1, k_2, \cdots, k_8, k_1<k_2<\cdots<k_8, L_{k_1}=L_{k_2}=\cdots=L_{k_8}$$
+    可以断言
+    $$h_{k_1}>h_{k_2}>\cdots>h_{k_8}$$
+    否则, 存在$k_i$和$k_j$,$k_i<k_j$, $h_{k_i}<h_{k_j}$. 
+    
+    则从第$k_i$个同学开始, 将第$k_i$个同学和从第$k_j$个同学开始的最大升高递增列相连可以获得一个长度大于$L_{k_i}$的身高递增列, 这与$L_{k_i}$的选取矛盾. 因此, 我们找到了一个满足条件的身高递减序列. 
+    
+    命题得证. 
+    \end{proof}
+    \end{example}
+
+
+
+		
+\end{document}
+
+	
