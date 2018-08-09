@@ -1,4 +1,5 @@
 \documentclass[11pt]{article}
+\usepackage{mathrsfs}
 
 \usepackage[a4paper]{geometry}
 \geometry{left=2.0cm,right=2.0cm,top=2.5cm,bottom=2.5cm}
@@ -8,7 +9,7 @@
 \usepackage{algorithm,algorithmicx}
 \usepackage[noend]{algpseudocode}
 \usepackage{fancyhdr}
- 
+
 
 \newcounter{counter_exm}\setcounter{counter_exm}{1}
 %\newcounter{counter_thm}\setcounter{counter_thm}{1}
@@ -28,7 +29,6 @@
 
 \newenvironment{solution}{{\noindent\hskip 2em \bf 解 \quad}}
 
-
 \renewenvironment{proof}{{\noindent\hskip 2em \bf 证明 \quad}}{\hfill$\qed$\par}
 \newenvironment{example}{{\noindent\hskip 2em \bf 例 \arabic{counter_exm}\quad}}{\addtocounter{counter_exm}{1}\par}
 
@@ -37,12 +37,12 @@
 \newcommand\E{\mathbb{E}}
 
 \begin{document}
-    
+
     \pagestyle{fancy}
     \lhead{\kaishu 中国科学院大学}
     \chead{}
     \rhead{\kaishu 2017年秋季学期组合数学}
-    
+
     \begin{center}
         {\LARGE \bf 组合数学第一讲}\\
     \end{center}
@@ -51,7 +51,7 @@
             授课教师: 孙晓明
             \hfill 记录人: 高昂
         \end{kaishu}
-    
+
     \section{概念与例子}
 
     以如下方式陈述概念.
@@ -89,7 +89,7 @@
             \frac{n!}{n_1!n_2!n_3!\cdots n_k!}.
         \]
     \end{proof}
-    
+
     \newpage
     多行数学推导推荐使用align和gather环境, 示例如下.
 
